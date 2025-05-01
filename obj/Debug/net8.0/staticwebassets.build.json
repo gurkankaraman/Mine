@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "zsQCOXlpzr5oScLhs6INKurhHYB1kztDq73ekSLIHbc=",
+  "Source": "ChatInsightGemini",
+  "BasePath": "_content/ChatInsightGemini",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

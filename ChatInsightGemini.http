@@ -1,0 +1,6 @@
+@ChatInsightGemini_HostAddress = http://localhost:5001
+
+GET {{ChatInsightGemini_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
