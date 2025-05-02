@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Sohbet Analizi";
+}
+
+<h2>Sohbet Analizi</h2>
+
+<form method="post">
+    <label>Sohbet Metni:</label><br />
+    <textarea name="conversation" rows="5" cols="60"></textarea><br /><br />
+
+    <label>Analiz Türü:</label>
+    <select name="type">
+        <option value="flirt">Flört</option>
+        <option value="conflict">Tartışma</option>
+    </select><br /><br />
+
+    <button type="submit">Analiz Et</button>
+</form>
+
+@if (ViewBag.AnalysisResult != null)
+{
+    <h3>Gemini Yanıtı:</h3>
+    <pre>@ViewBag.AnalysisResult</pre>
+}

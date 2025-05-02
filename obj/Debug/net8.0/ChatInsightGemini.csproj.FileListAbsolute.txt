@@ -35,3 +35,5 @@ C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0
 C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0\ChatInsightGemini.pdb
 C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0\ChatInsightGemini.genruntimeconfig.cache
 C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0\ref\ChatInsightGemini.dll
+C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0\ChatInsightGemini.RazorAssemblyInfo.cache
+C:\Users\batur\source\repos\ChatInsightGemini\ChatInsightGemini\obj\Debug\net8.0\ChatInsightGemini.RazorAssemblyInfo.cs
