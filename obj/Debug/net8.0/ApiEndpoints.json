@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "ChatAnalysisController",
+    "Method": "Analyze",
+    "RelativePath": "api/ChatAnalysis",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

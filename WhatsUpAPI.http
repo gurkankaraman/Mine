@@ -1,6 +1,0 @@
-@WhatsUpAPI_HostAddress = http://localhost:5064
-
-GET {{WhatsUpAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
