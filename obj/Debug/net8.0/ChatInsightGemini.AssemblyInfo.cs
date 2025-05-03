@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChatInsightGemini")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf608d73a2bf91e7a7c1c2cd5aab42cb6d47c4df")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChatInsightGemini")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChatInsightGemini")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

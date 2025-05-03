@@ -19,12 +19,21 @@ public class GeminiClient
 
     public async Task<string> AnalyzeChatAsync(string conversation, string analysisType)
     {
-        // Prompt oluşturuluyor
         string prompt = analysisType switch
         {
-            "flirt" => $"Bu bir flört konuşması. Tarafların ilgi, empati ve tutumlarını analiz et:\n{conversation}",
-            "conflict" => $"Bu bir tartışma. Her iki tarafın güçlü ve zayıf yönlerini analiz et:\n{conversation}",
-            _ => $"Sohbeti analiz et:\n{conversation}"
+            "flirt" => $"Bu bir flört konuşması. Konuşmadaki kişilerin ilgi, empati ve tutumlarını analiz et. Aralarındaki duygusal dinamiği, sohbetin samimiyetini, olası ilişki potansiyelini değerlendir:\n{conversation}",
+
+            "conflict" => $"Bu bir tartışma/anlaşmazlık konuşması. Her iki tarafın argümanlarını, güçlü ve zayıf yönlerini analiz et. Anlaşmazlığın kaynağını belirle ve olası çözüm yolları öner:\n{conversation}",
+
+            "friendship" => $"Bu bir arkadaşlar arası konuşma. Arkadaşlık dinamiklerini, samimiyet düzeyini, ortak ilgi alanlarını ve iletişim şekillerini analiz et. Arkadaşlık bağının gücünü değerlendir:\n{conversation}",
+
+            "family" => $"Bu bir aile üyeleri arasında geçen konuşma. Aile dinamiklerini, roller arasındaki ilişkileri, duygusal bağları ve iletişim kalıplarını analiz et. Ailenin ilişki yapısını değerlendir:\n{conversation}",
+
+            "professional" => $"Bu bir iş/profesyonel ortamda geçen konuşma. İş ilişkilerini, profesyonel iletişim düzeyini, iş süreçlerini ve çalışma dinamiklerini analiz et. Profesyonel ilişkinin etkinliğini değerlendir:\n{conversation}",
+
+            "general" => $"Bu bir sohbet. Konuşmacıların iletişim tarzlarını, konu değişimlerini, duygu tonlarını ve etkileşim kalıplarını analiz et. Konuşmanın genel havasını ve katılımcıların birbirlerine karşı tutumlarını değerlendir:\n{conversation}",
+
+            _ => $"Sohbeti analiz et. Katılımcıların iletişim stillerini, konuşma konularını ve genel diyalog dinamiklerini değerlendir:\n{conversation}"
         };
 
         // ✅ Gemini'nin beklediği JSON formatı
