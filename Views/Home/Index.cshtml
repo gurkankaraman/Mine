@@ -2,47 +2,416 @@
     ViewData["Title"] = "WhatsApp Sohbet Analizi";
 }
 
-<div class="container">
-    <h2 class="mt-4 mb-4">WhatsApp Sohbet Analizi Uygulaması</h2>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Sohbet Analizi</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --whatsapp-green: #25D366;
+            --whatsapp-light-green: #dcf8c6;
+            --whatsapp-dark: #075E54;
+        }
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h3>Analiz Türünü Seçin</h3>
-                </div>
-                <div class="card-body">
-                    <p>WhatsApp konuşmalarınızı analiz ederek, derin içgörüler elde edin:</p>
-                    <div class="d-grid gap-3">
-                        <a href="@Url.Action("Analyze")" class="btn btn-primary btn-lg">
-                            <i class="fas fa-chart-line"></i> Konuşma Analizi
-                        </a>
-                        <p class="text-muted">Konuşmaların duygusal tonunu, dinamiklerini ve ilişki yapısını analiz edin.</p>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-                        <a href="@Url.Action("SuggestResponses")" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-reply-all"></i> Cevap Önerileri
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.2rem;
+        }
+
+            .card-header h3 {
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            border-color: var(--whatsapp-green);
+            color: white;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-whatsapp:hover {
+                background-color: var(--whatsapp-dark);
+                border-color: var(--whatsapp-dark);
+                transform: translateY(-2px);
+            }
+
+        .btn-whatsapp-outline {
+            background-color: white;
+            border-color: var(--whatsapp-green);
+            color: var(--whatsapp-green);
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-whatsapp-outline:hover {
+                background-color: var(--whatsapp-green);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .feature-icon {
+            background-color: var(--whatsapp-light-green);
+            color: var(--whatsapp-dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .header-section {
+            background-color: var(--whatsapp-dark);
+            color: white;
+            padding: 3rem 0;
+            border-radius: 0 0 25px 25px;
+            margin-bottom: 30px;
+        }
+
+        .header-image {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .info-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+            .info-box:hover {
+                transform: translateY(-5px);
+            }
+
+        .testimonial {
+            background-color: var(--whatsapp-light-green);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--whatsapp-green);
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="display-4 fw-bold mb-3">WhatsApp Sohbet Analizi</h1>
+                    <p class="fs-5 mb-4">Yapay zeka ile WhatsApp konuşmalarınızı analiz edin, ilişki dinamiklerinizi keşfedin ve iletişiminizi geliştirin.</p>
+                    <div class="d-sm-flex gap-3">
+                        <a href="@Url.Action("Analyze")" class="btn btn-light btn-lg px-4 me-md-2 fw-bold mb-3 mb-sm-0">
+                            <i class="fas fa-file-upload me-2"></i> Şimdi Sohbet Yükle
                         </a>
-                        <p class="text-muted">Konuşmaya verebileceğiniz en uygun yanıtları görün ve seçenekler arasından seçim yapın.</p>
+                        <a href="#nasil-calisir" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-info-circle me-2"></i> Nasıl Çalışır?
+                        </a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h3>Uygulama Hakkında</h3>
-                </div>
-                <div class="card-body">
-                    <p>Bu uygulama, Google Gemini AI kullanarak WhatsApp konuşmalarınızı analiz eder.</p>
-                    <ul>
-                        <li>Konuşmalarınız güvenle işlenir</li>
-                        <li>Farklı türde analizler sunar (flört, tartışma, arkadaşlık, aile, iş)</li>
-                        <li>Konuşmalara özel cevap önerileri üretir</li>
-                        <li>Tarihe göre filtreleme yapabilir</li>
-                    </ul>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <img src="/api/placeholder/550/400" alt="WhatsApp Analiz Görseli" class="header-image img-fluid mt-4 mt-lg-0" />
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <div class="container">
+        <!-- Main Features -->
+        <section class="mb-5">
+            <h2 class="text-center mb-5 fw-bold">Analiz Türleri</h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <h3><i class="fas fa-chart-line me-2"></i> Detaylı Konuşma Analizi</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <img src="/api/placeholder/400/200" alt="Konuşma Analizi" class="img-fluid rounded" />
+                            </div>
+                            <h4 class="mb-3">Sohbetlerinizi derinlemesine analiz edin</h4>
+                            <p>Yapay zeka destekli sistemimiz ile WhatsApp konuşmalarınızı analiz ederek:</p>
+                            <ul class="list-group list-group-flush mb-4">
+                                <li class="list-group-item border-0"><i class="fas fa-heart text-danger me-2"></i> İlişki duygusal tonunu belirleyin</li>
+                                <li class="list-group-item border-0"><i class="fas fa-comments text-primary me-2"></i> Konuşma dengesini görün</li>
+                                <li class="list-group-item border-0"><i class="fas fa-clock text-warning me-2"></i> Konuşma ritminizi keşfedin</li>
+                                <li class="list-group-item border-0"><i class="fas fa-laugh-beam text-success me-2"></i> Emoji ve dil kullanım alışkanlıklarını öğrenin</li>
+                            </ul>
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Analyze")" class="btn btn-whatsapp">
+                                    <i class="fas fa-chart-pie me-2"></i> Konuşma Analizi Başlat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <h3><i class="fas fa-reply-all me-2"></i> Akıllı Cevap Önerileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <img src="/api/placeholder/400/200" alt="Cevap Önerileri" class="img-fluid rounded" />
+                            </div>
+                            <h4 class="mb-3">En uygun yanıtları otomatik oluşturun</h4>
+                            <p>Yapay zeka algoritması, konuşma bağlamınıza uygun yanıtlar üretir:</p>
+                            <ul class="list-group list-group-flush mb-4">
+                                <li class="list-group-item border-0"><i class="fas fa-magic text-purple me-2"></i> Konuşma tarihçesine göre kişiselleştirilmiş öneriler</li>
+                                <li class="list-group-item border-0"><i class="fas fa-thumbs-up text-success me-2"></i> Farklı ton ve duygularda yanıt seçenekleri</li>
+                                <li class="list-group-item border-0"><i class="fas fa-bolt text-warning me-2"></i> Hızlı ve doğal cevaplar oluşturma</li>
+                                <li class="list-group-item border-0"><i class="fas fa-user-tag text-info me-2"></i> İlişki türüne göre özelleştirilmiş yanıtlar</li>
+                            </ul>
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("SuggestResponses")" class="btn btn-whatsapp-outline">
+                                    <i class="fas fa-comment-dots me-2"></i> Cevap Önerileri Al
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="mb-5" id="nasil-calisir">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3><i class="fas fa-question-circle me-2"></i> Nasıl Çalışır?</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <img src="/api/placeholder/500/300" alt="Nasıl Çalışır" class="img-fluid rounded" />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-4">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-file-export"></i>
+                                </div>
+                                <div>
+                                    <h4>1. Sohbeti Dışa Aktarın</h4>
+                                    <p>WhatsApp'tan konuşma geçmişinizi dışa aktarın (.txt formatında)</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-upload"></i>
+                                </div>
+                                <div>
+                                    <h4>2. Dosyayı Yükleyin</h4>
+                                    <p>Sohbet dosyasını sistemimize yükleyin ve analiz türünü seçin</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div>
+                                    <h4>3. AI İşlem Yapsın</h4>
+                                    <p>Google Gemini AI sistemimiz konuşmayı analiz eder</p>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div>
+                                    <h4>4. Sonuçları Görün</h4>
+                                    <p>Detaylı raporları ve cevap önerilerini anında alın</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About the App -->
+        <section class="mb-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <h3><i class="fas fa-info-circle me-2"></i> Uygulama Hakkında</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="lead">Bu uygulama, Google Gemini AI kullanarak WhatsApp konuşmalarınızı akıllı bir şekilde analiz eder.</p>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-box">
+                                        <h4><i class="fas fa-shield-alt text-primary me-2"></i> Gizlilik Odaklı</h4>
+                                        <p>Konuşmalarınız tamamen güvenli bir şekilde işlenir, hiçbir veri saklanmaz veya üçüncü şahıslarla paylaşılmaz.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-box">
+                                        <h4><i class="fas fa-brain text-danger me-2"></i> Yapay Zeka Gücü</h4>
+                                        <p>Google'ın gelişmiş Gemini AI modelini kullanarak doğal dil anlama ve duygu analizi yapar.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-box">
+                                        <h4><i class="fas fa-filter text-success me-2"></i> Gelişmiş Filtreleme</h4>
+                                        <p>Tarih aralığına, kişilere veya konuşma içeriğine göre filtreleyerek özel analizler yapabilirsiniz.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="info-box">
+                                        <h4><i class="fas fa-users text-warning me-2"></i> İlişki Tiplerine Göre</h4>
+                                        <p>Flört, arkadaşlık, aile, iş gibi farklı ilişki türlerine göre özelleştirilmiş analizler sunar.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial">
+                                <p class="mb-1">"Bu uygulama sayesinde sevgilimle iletişim dinamiklerimizi çok daha iyi anladım ve ilişkimiz güçlendi."</p>
+                                <footer class="blockquote-footer mt-2">Ayşe K.</footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h3><i class="fas fa-star me-2"></i> Özellikler</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Duygusal ton analizi</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Konuşma dengesi ve sıklığı</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Emoji ve dil kullanım alışkanlıkları</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Akıllı cevap önerileri</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Tarih filtreleme seçenekleri</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Görsel grafikler ve analizler</span>
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                                    <span>Dışa aktarılabilir raporlar</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h3><i class="fas fa-question me-2"></i> Yardım mı Lazım?</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Uygulama kullanımı veya sohbet dışa aktarma konusunda destek almak ister misiniz?</p>
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Help")" class="btn btn-whatsapp">
+                                    <i class="fas fa-life-ring me-2"></i> Yardım Sayfası
+                                </a>
+                                <a href="@Url.Action("Contact")" class="btn btn-whatsapp-outline">
+                                    <i class="fas fa-envelope me-2"></i> Bize Ulaşın
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>WhatsApp Sohbet Analizi</h5>
+                    <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hızlı Linkler</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Analyze")" class="text-white">Konuşma Analizi</a></li>
+                        <li><a href="@Url.Action("SuggestResponses")" class="text-white">Cevap Önerileri</a></li>
+                        <li><a href="@Url.Action("Help")" class="text-white">Yardım</a></li>
+                        <li><a href="@Url.Action("Privacy")" class="text-white">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@whatsappanaliz.com</li>
+                        <li><i class="fas fa-phone me-2"></i> +90 212 123 4567</li>
+                        <li class="mt-3">
+                            <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

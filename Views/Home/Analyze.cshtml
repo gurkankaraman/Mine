@@ -2,44 +2,340 @@
     ViewData["Title"] = "Konuşma Analizi";
 }
 
-<div class="container">
-    <h2 class="mt-4 mb-3">Konuşma Analizi</h2>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Konuşma Analizi</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --whatsapp-green: #25D366;
+            --whatsapp-light-green: #dcf8c6;
+            --whatsapp-dark: #075E54;
+        }
 
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h3>Konuşma Bilgilerinizi Girin</h3>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.2rem;
+        }
+
+            .card-header h3, .card-header h4 {
+                margin: 0;
+                font-weight: 600;
+            }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            border-color: var(--whatsapp-green);
+            color: white;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-whatsapp:hover {
+                background-color: var(--whatsapp-dark);
+                border-color: var(--whatsapp-dark);
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary-whatsapp {
+            background-color: #f0f0f0;
+            border-color: #e0e0e0;
+            color: #333;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary-whatsapp:hover {
+                background-color: #e0e0e0;
+                transform: translateY(-2px);
+            }
+
+        .header-section {
+            background-color: var(--whatsapp-dark);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 25px 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: var(--whatsapp-green);
+                box-shadow: 0 0 0 0.25rem rgba(37, 211, 102, 0.25);
+            }
+
+        .form-floating label {
+            padding: 1rem;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+            .file-upload-wrapper:hover {
+                border-color: var(--whatsapp-green);
+            }
+
+        .file-upload-input {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            opacity: 0;
+            cursor: pointer;
+            left: 0;
+            top: 0;
+        }
+
+        .file-upload-text {
+            margin-bottom: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .analysis-result {
+            border-radius: 15px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-section {
+            margin-bottom: 30px;
+        }
+
+        .analysis-section-title {
+            border-bottom: 2px solid var(--whatsapp-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--whatsapp-dark);
+        }
+
+        .conversation-preview {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid #e9ecef;
+        }
+
+        .tip-box {
+            background-color: var(--whatsapp-light-green);
+            border-left: 5px solid var(--whatsapp-green);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .dates-list {
+            list-style-type: none;
+            padding-left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .date-badge {
+            background-color: var(--whatsapp-light-green);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--whatsapp-dark);
+            display: inline-block;
+        }
+
+        .analysis-type-box {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-type-option {
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .analysis-type-option:hover, .analysis-type-option.active {
+                border-color: var(--whatsapp-green);
+                background-color: var(--whatsapp-light-green);
+            }
+
+            .analysis-type-option i {
+                font-size: 24px;
+                margin-bottom: 8px;
+                color: var(--whatsapp-dark);
+            }
+
+            .analysis-type-option p {
+                margin-bottom: 0;
+                font-weight: 600;
+            }
+
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="mb-2">Konuşma Analizi</h1>
+                    <p class="mb-0">WhatsApp sohbetinizi yükleyin ve derinlemesine analiz sonuçları alın</p>
+                </div>
+                <a href="@Url.Action("Index")" class="btn btn-outline-light px-4">
+                    <i class="fas fa-home me-2"></i> Ana Sayfa
+                </a>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
-                <div class="form-group mb-3">
-                    <label>Sohbet Metni:</label>
-                    <textarea name="conversation" rows="5" class="form-control" placeholder="WhatsApp konuşmanızı buraya yapıştırın..."></textarea>
-                </div>
+    </div>
 
-                <div class="form-group mb-3">
-                    <label>veya WhatsApp Konuşma Dosyası:</label>
-                    <input type="file" name="chatFile" accept=".txt" class="form-control" />
-                    <small class="text-muted">WhatsApp'tan dışa aktardığınız .txt formatındaki sohbet dosyasını yükleyin.</small>
-                </div>
+    <div class="container">
+        <div class="card mb-5">
+            <div class="card-header bg-dark text-white">
+                <h3><i class="fas fa-file-import me-2"></i> Konuşma Bilgilerinizi Girin</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <!-- Text Area Input -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">WhatsApp Sohbet Metni:</label>
+                        <textarea name="conversation" class="form-control"
+                                  placeholder="WhatsApp konuşmanızı buraya yapıştırın..." rows="4"></textarea>
+                        <div class="form-text">Konuşmayı doğrudan buraya yapıştırabilirsiniz.</div>
+                    </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label>Analiz Edilecek Süre:</label>
-                            <select name="dayCount" class="form-control">
+                    <!-- Or Divider -->
+                    <div class="d-flex align-items-center my-4">
+                        <hr class="flex-grow-1">
+                        <span class="mx-3 text-muted">VEYA</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="file-upload-wrapper mb-4">
+                        <input type="file" name="chatFile" accept=".txt" class="file-upload-input">
+                        <div class="text-center">
+                            <div class="file-upload-text"><i class="fas fa-cloud-upload-alt me-2"></i> Dosya Yükle</div>
+                            <p class="text-muted mb-2">WhatsApp'tan dışa aktardığınız .txt dosyasını buraya sürükleyin</p>
+                            <div class="btn btn-whatsapp">Dosya Seç</div>
+                        </div>
+                    </div>
+
+                    <!-- Options Section -->
+                    <div class="row g-4">
+                        <!-- Analysis Period -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Analiz Edilecek Süre:</label>
+                            <select name="dayCount" class="form-select">
                                 <option value="1">Son 1 gün</option>
                                 <option value="2">Son 2 gün</option>
                                 <option value="3" selected>Son 3 gün</option>
                                 <option value="7">Son 1 hafta</option>
+                                <option value="14">Son 2 hafta</option>
                                 <option value="30">Son 1 ay</option>
+                                <option value="90">Son 3 ay</option>
+                                <option value="180">Son 6 ay</option>
+                                <option value="365">Son 1 yıl</option>
+                                <option value="0">Tüm konuşma</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label>Analiz Türü:</label>
-                            <select name="type" class="form-control">
+                        <!-- Analysis Type -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Analiz Türü:</label>
+                            <div class="analysis-type-box d-none d-md-flex">
+                                <div class="analysis-type-option active" data-value="flirt">
+                                    <i class="fas fa-heart"></i>
+                                    <p>Flört</p>
+                                </div>
+                                <div class="analysis-type-option" data-value="conflict">
+                                    <i class="fas fa-bolt"></i>
+                                    <p>Tartışma</p>
+                                </div>
+                                <div class="analysis-type-option" data-value="friendship">
+                                    <i class="fas fa-user-friends"></i>
+                                    <p>Arkadaşlık</p>
+                                </div>
+                                <div class="analysis-type-option" data-value="family">
+                                    <i class="fas fa-home"></i>
+                                    <p>Aile</p>
+                                </div>
+                                <div class="analysis-type-option" data-value="professional">
+                                    <i class="fas fa-briefcase"></i>
+                                    <p>İş</p>
+                                </div>
+                                <div class="analysis-type-option" data-value="general">
+                                    <i class="fas fa-comments"></i>
+                                    <p>Genel</p>
+                                </div>
+                            </div>
+                            <select name="type" class="form-select d-md-none">
                                 <option value="flirt">Flört Analizi</option>
                                 <option value="conflict">Tartışma Analizi</option>
                                 <option value="friendship">Arkadaşlık Analizi</option>
@@ -47,61 +343,176 @@
                                 <option value="professional">İş/Profesyonel Analizi</option>
                                 <option value="general">Genel Analiz</option>
                             </select>
+                            <input type="hidden" name="type" id="selected-type" value="flirt">
                         </div>
                     </div>
-                </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
-                    <a href="@Url.Action("Index")" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Geri
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-chart-pie"></i> Analiz Et
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                    <!-- Tip Box -->
+                    <div class="tip-box mt-4">
+                        <h5><i class="fas fa-lightbulb me-2"></i> Bilgilendirme</h5>
+                        <p class="mb-0">
+                            WhatsApp'tan sohbeti dışa aktarmak için:
+                            <b>Sohbet > Menü > Diğer > Sohbeti Dışa Aktar</b> seçeneklerini takip edin. Medya olmadan seçeneğini işaretleyerek daha hızlı analiz yapabilirsiniz.
+                        </p>
+                    </div>
 
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger mt-3">@ViewBag.Error</div>
-    }
-
-    @if (ViewBag.AnalysisResult != null)
-    {
-        <div class="card mt-4 mb-4">
-            <div class="card-header bg-success text-white">
-                <h3>Analiz Sonucu</h3>
-            </div>
-            <div class="card-body">
-                <pre class="p-3 bg-light">@ViewBag.AnalysisResult</pre>
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary-whatsapp">
+                            <i class="fas fa-arrow-left me-2"></i> Geri
+                        </a>
+                        <button type="submit" class="btn btn-whatsapp">
+                            <i class="fas fa-chart-pie me-2"></i> Analiz Et
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        @if (ViewBag.IncludedDates != null && ViewBag.IncludedDates.Count > 0)
+        @if (ViewBag.Error != null)
         {
-            <div class="mt-4 mb-4">
-                <h4>Analiz Edilen Tarihler:</h4>
-                <div class="alert alert-info">
-                    Son @ViewBag.DayCount gün içindeki konuşmalar analiz edildi:
-                    <ul class="mt-2">
-                        @foreach (var date in ViewBag.IncludedDates)
-                        {
-                            <li>@date.ToString("dd.MM.yyyy")</li>
-                        }
-                    </ul>
-                </div>
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> @ViewBag.Error
             </div>
         }
 
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h4>Analiz Edilen Konuşma</h4>
+        @if (ViewBag.AnalysisResult != null)
+        {
+            <div class="analysis-result mb-5">
+                <div class="analysis-section">
+                    <h3 class="analysis-section-title">
+                        <i class="fas fa-chart-line me-2"></i> Analiz Sonuçları
+                    </h3>
+                    <div class="p-4 rounded-3 bg-light">
+                        <div class="formatted-result">@Html.Raw(ViewBag.AnalysisResult.Replace("\n", "<br>"))</div>
+                    </div>
+                </div>
+
+                @if (ViewBag.IncludedDates != null && ViewBag.IncludedDates.Count > 0)
+                {
+                    <div class="analysis-section">
+                        <h4 class="analysis-section-title">
+                            <i class="fas fa-calendar-alt me-2"></i> Analiz Edilen Tarihler
+                        </h4>
+                        <div class="alert alert-info">
+                            <p>Son @ViewBag.DayCount gün içindeki konuşmalar analiz edildi:</p>
+                            <ul class="dates-list">
+                                @foreach (var date in ViewBag.IncludedDates)
+                                {
+                                    <li><span class="date-badge"><i class="fas fa-calendar-day me-2"></i>@date.ToString("dd.MM.yyyy")</span></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+                <div class="analysis-section">
+                    <h4 class="analysis-section-title">
+                        <i class="fas fa-comment-dots me-2"></i> Analiz Edilen Konuşma Örneği
+                    </h4>
+                    <div class="conversation-preview">@ViewBag.FilteredConversation</div>
+                    <div class="tip-box">
+                        <h5><i class="fas fa-info-circle me-2"></i> Bilgi</h5>
+                        <p class="mb-0">Yukarıda konuşmanızın analiz edilen kısmından bir örnek görüyorsunuz. Analiz, belirlediğiniz tarih aralığındaki tüm konuşmaları içerir.</p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-5">
+                    <a href="@Url.Action("Analyze")" class="btn btn-secondary-whatsapp">
+                        <i class="fas fa-redo me-2"></i> Yeni Analiz
+                    </a>
+                    <a href="@Url.Action("SuggestResponses")" class="btn btn-whatsapp">
+                        <i class="fas fa-reply-all me-2"></i> Cevap Önerileri Al
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
-                <pre style="max-height: 300px; overflow-y: auto;" class="p-3 bg-light">@ViewBag.FilteredConversation</pre>
+        }
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>WhatsApp Sohbet Analizi</h5>
+                    <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hızlı Linkler</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Analyze")" class="text-white">Konuşma Analizi</a></li>
+                        <li><a href="@Url.Action("SuggestResponses")" class="text-white">Cevap Önerileri</a></li>
+                        <li><a href="@Url.Action("Help")" class="text-white">Yardım</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@whatsappanaliz.com</li>
+                        <li><i class="fas fa-phone me-2"></i> +90 212 123 4567</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-3">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
             </div>
         </div>
-    }
-</div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // File upload visual feedback
+        const fileInput = document.querySelector('.file-upload-input');
+        const fileWrapper = document.querySelector('.file-upload-wrapper');
+        const fileText = document.querySelector('.file-upload-text');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const fileName = this.files[0].name;
+                    fileText.innerHTML = '<i class="fas fa-file-alt me-2"></i> ' + fileName;
+                    fileWrapper.style.borderColor = 'var(--whatsapp-green)';
+                } else {
+                    fileText.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> Dosya Yükle';
+                    fileWrapper.style.borderColor = '#ddd';
+                }
+            });
+        }
+
+        // Analysis type selection
+        const typeOptions = document.querySelectorAll('.analysis-type-option');
+        const typeInput = document.getElementById('selected-type');
+
+        if (typeOptions.length > 0) {
+            typeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    typeOptions.forEach(opt => opt.classList.remove('active'));
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    // Update hidden input value
+                    typeInput.value = this.getAttribute('data-value');
+                });
+            });
+        }
+
+        // Format analysis result with proper styling
+        document.addEventListener('DOMContentLoaded', function() {
+            const formattedResult = document.querySelector('.formatted-result');
+            if (formattedResult) {
+                // Apply styling to headers, lists, etc.
+                let content = formattedResult.innerHTML;
+                // Style headers
+                content = content.replace(/^(.+?):/gm, '<strong class="text-dark">$1:</strong>');
+                // Style emoticons
+                content = content.replace(/[😊😍🤔😂❤️👍]/g, '<span class="fs-5">$&</span>');
+                formattedResult.innerHTML = content;
+            }
+        });
+    </script>
+
+</body>
+</html>
