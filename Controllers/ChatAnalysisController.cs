@@ -23,5 +23,5 @@ public class ChatAnalysisController : ControllerBase
 public class ChatRequest
 {
     public string Conversation { get; set; }
-    public string Type { get; set; } // "flirt" or "conflict"
+    public string Type { get; set; }
 }

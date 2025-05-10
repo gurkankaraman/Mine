@@ -11,53 +11,52 @@ namespace ChatInsightGemini.Controllers
             _geminiClient = geminiClient;
         }
 
+        // Ana sayfa - sadece seçim sayfasını göster
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        // Analiz sayfası - GET
+        [HttpGet]
+        public IActionResult Analyze()
+        {
+            return View();
+        }
+
+        // Analiz sayfası - POST
         [HttpPost]
-        public async Task<IActionResult> Index(string conversation, IFormFile chatFile, int dayCount, string type)
+        public async Task<IActionResult> Analyze(string conversation, IFormFile chatFile, int dayCount, string type)
         {
             try
             {
-                string inputText = "";
+                // Metni işle
+                var (processedText, includedDates) = await ProcessConversationInput(conversation, chatFile, dayCount);
 
-                // Dosya mı, metin mi kontrolü
-                if (chatFile != null && chatFile.Length > 0)
+                // Boş metin kontrolü
+                if (string.IsNullOrWhiteSpace(processedText))
                 {
-                    // Dosyadan konuşmayı al
-                    using (var reader = new StreamReader(chatFile.OpenReadStream()))
+                    if (chatFile != null && chatFile.Length > 0)
                     {
-                        inputText = await reader.ReadToEndAsync();
+                        ViewBag.Error = $"Son {dayCount} güne ait konuşma bulunamadı.";
                     }
-                }
-                else if (!string.IsNullOrWhiteSpace(conversation))
-                {
-                    // Metin alanından konuşmayı al
-                    inputText = conversation;
-                }
-                else
-                {
-                    ViewBag.Error = "Lütfen bir sohbet metni girin veya bir dosya yükleyin.";
+                    else
+                    {
+                        ViewBag.Error = "Lütfen bir sohbet metni girin veya bir dosya yükleyin.";
+                    }
                     return View();
                 }
 
-                // Son X gün konuşmalarını filtrele
-                var (filteredConversation, includedDates) = FilterConversationByDays(inputText, dayCount);
+                // Analiz işlemine devam et
+                var result = await _geminiClient.AnalyzeChatAsync(processedText, type);
 
-                if (string.IsNullOrWhiteSpace(filteredConversation))
-                {
-                    ViewBag.Error = $"Son {dayCount} güne ait konuşma bulunamadı.";
-                    return View();
-                }
-
-                var result = await _geminiClient.AnalyzeChatAsync(filteredConversation, type);
+                // ViewBag değerlerini ata
                 ViewBag.AnalysisResult = result;
-                ViewBag.FilteredConversation = filteredConversation;
+                ViewBag.FilteredConversation = processedText;
                 ViewBag.IncludedDates = includedDates;
                 ViewBag.DayCount = dayCount;
+
                 return View();
             }
             catch (Exception ex)
@@ -65,6 +64,89 @@ namespace ChatInsightGemini.Controllers
                 ViewBag.Error = $"Hata oluştu: {ex.Message}";
                 return View();
             }
+        }
+
+        // Cevap önerileri sayfası - GET
+        [HttpGet]
+        public IActionResult SuggestResponses()
+        {
+            return View();
+        }
+
+        // Cevap önerileri sayfası - POST
+        [HttpPost]
+        public async Task<IActionResult> SuggestResponses(string conversation, IFormFile chatFile, int dayCount)
+        {
+            try
+            {
+                // Metni işle - aynı ProcessConversationInput metodunu kullan
+                var (processedText, includedDates) = await ProcessConversationInput(conversation, chatFile, dayCount);
+
+                // Boş metin kontrolü
+                if (string.IsNullOrWhiteSpace(processedText))
+                {
+                    if (chatFile != null && chatFile.Length > 0)
+                    {
+                        ViewBag.Error = $"Son {dayCount} güne ait konuşma bulunamadı.";
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Lütfen bir sohbet metni girin veya bir dosya yükleyin.";
+                    }
+                    return View();
+                }
+
+                // Cevap önerileri al
+                var result = await _geminiClient.SuggestResponsesAsync(processedText);
+                ViewBag.SuggestedResponses = result;
+                ViewBag.OriginalConversation = processedText;
+                ViewBag.IncludedDates = includedDates;
+                ViewBag.DayCount = dayCount;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = $"Hata oluştu: {ex.Message}";
+                return View();
+            }
+        }
+
+
+        private async Task<(string ProcessedText, List<DateTime> IncludedDates)> ProcessConversationInput(string conversation, IFormFile chatFile, int dayCount)
+        {
+            string inputText = "";
+            List<DateTime> includedDates = new List<DateTime>();
+
+            // Dosya mı, metin mi kontrolü
+            if (chatFile != null && chatFile.Length > 0)
+            {
+                // Dosyadan konuşmayı al
+                using (var reader = new StreamReader(chatFile.OpenReadStream()))
+                {
+                    inputText = await reader.ReadToEndAsync();
+                }
+
+                // Dosyadan gelen konuşmayı filtrele
+                var (filteredConversation, dates) = FilterConversationByDays(inputText, dayCount);
+
+                if (string.IsNullOrWhiteSpace(filteredConversation))
+                {
+                    // Boş döndüğünde hata oluştur, bu durumu controller'da kontrol edebiliriz
+                    return (string.Empty, new List<DateTime>());
+                }
+
+                // Filtrelenmiş metni ve tarihleri döndür
+                return (filteredConversation, dates);
+            }
+            else if (!string.IsNullOrWhiteSpace(conversation))
+            {
+                // Metin alanından konuşmayı al ve filtreleme YAPMA
+                return (conversation, new List<DateTime>());
+            }
+
+            // Her iki durumda da veri yoksa boş değer döndür
+            return (string.Empty, new List<DateTime>());
         }
 
         private (string FilteredText, List<DateTime> IncludedDates) FilterConversationByDays(string conversation, int dayCount)

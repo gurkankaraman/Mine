@@ -75,4 +75,48 @@ public class GeminiClient
         dynamic result = JsonConvert.DeserializeObject(responseContent);
         return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
     }
+
+    public async Task<string> SuggestResponsesAsync(string conversation)
+    {
+        string prompt = $"Aşağıdaki konuşmada son mesaja verilecek 5 farklı olası cevap öner. Her bir cevap farklı bir yaklaşım içermeli (örn: kabul etme, reddetme, erteleme, soru sorma, vb.). Cevapları maddeler halinde numara vererek liste. Cevaplar doğal, samimi ve konuşmanın akışına uygun olmalı:\n\n{conversation}";
+
+        // Gemini API'si için JSON payload hazırla
+        var payload = new
+        {
+            contents = new[]
+            {
+            new
+            {
+                role = "user",
+                parts = new[]
+                {
+                    new { text = prompt }
+                }
+            }
+        }
+        };
+
+        // JSON'a çevir
+        var json = JsonConvert.SerializeObject(payload);
+
+        // İstek hazırla
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{_url}?key={_apiKey}" // ❗ API key burada query string içinde olmalı
+        );
+
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // İstek gönder ve kontrol et
+        var response = await _httpClient.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
+        }
+
+        dynamic result = JsonConvert.DeserializeObject(responseContent);
+        return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+    }
 }

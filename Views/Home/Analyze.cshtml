@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Konuşma Analizi";
+}
+
+<div class="container">
+    <h2 class="mt-4 mb-3">Konuşma Analizi</h2>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3>Konuşma Bilgilerinizi Girin</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <div class="form-group mb-3">
+                    <label>Sohbet Metni:</label>
+                    <textarea name="conversation" rows="5" class="form-control" placeholder="WhatsApp konuşmanızı buraya yapıştırın..."></textarea>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>veya WhatsApp Konuşma Dosyası:</label>
+                    <input type="file" name="chatFile" accept=".txt" class="form-control" />
+                    <small class="text-muted">WhatsApp'tan dışa aktardığınız .txt formatındaki sohbet dosyasını yükleyin.</small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Analiz Edilecek Süre:</label>
+                            <select name="dayCount" class="form-control">
+                                <option value="1">Son 1 gün</option>
+                                <option value="2">Son 2 gün</option>
+                                <option value="3" selected>Son 3 gün</option>
+                                <option value="7">Son 1 hafta</option>
+                                <option value="30">Son 1 ay</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Analiz Türü:</label>
+                            <select name="type" class="form-control">
+                                <option value="flirt">Flört Analizi</option>
+                                <option value="conflict">Tartışma Analizi</option>
+                                <option value="friendship">Arkadaşlık Analizi</option>
+                                <option value="family">Aile İlişkileri Analizi</option>
+                                <option value="professional">İş/Profesyonel Analizi</option>
+                                <option value="general">Genel Analiz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-chart-pie"></i> Analiz Et
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+    }
+
+    @if (ViewBag.AnalysisResult != null)
+    {
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-success text-white">
+                <h3>Analiz Sonucu</h3>
+            </div>
+            <div class="card-body">
+                <pre class="p-3 bg-light">@ViewBag.AnalysisResult</pre>
+            </div>
+        </div>
+
+        @if (ViewBag.IncludedDates != null && ViewBag.IncludedDates.Count > 0)
+        {
+            <div class="mt-4 mb-4">
+                <h4>Analiz Edilen Tarihler:</h4>
+                <div class="alert alert-info">
+                    Son @ViewBag.DayCount gün içindeki konuşmalar analiz edildi:
+                    <ul class="mt-2">
+                        @foreach (var date in ViewBag.IncludedDates)
+                        {
+                            <li>@date.ToString("dd.MM.yyyy")</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4>Analiz Edilen Konuşma</h4>
+            </div>
+            <div class="card-body">
+                <pre style="max-height: 300px; overflow-y: auto;" class="p-3 bg-light">@ViewBag.FilteredConversation</pre>
+            </div>
+        </div>
+    }
+</div>
