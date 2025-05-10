@@ -4,27 +4,37 @@ using ChatInsightGemini.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient<GeminiClient>();
-builder.Services.AddControllersWithViews(); // sadece AddControllers deðil!
-builder.Services.AddScoped<ConversationProcessor>();
 
+// HTTP Client kaydet
+builder.Services.AddHttpClient();
+
+// Gemini Client ve Conversation Processor kaydet
+builder.Services.AddScoped<GeminiClient>();
+builder.Services.AddScoped<ConversationProcessor>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+app.UseStaticFiles();
 
-app.MapDefaultControllerRoute();
+app.UseRouting();
 
 app.UseAuthorization();
 
-
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

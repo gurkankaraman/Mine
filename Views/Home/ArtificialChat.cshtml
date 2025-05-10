@@ -1,0 +1,1119 @@
+﻿@{
+    ViewData["Title"] = "Yapay Sohbet";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Yapay Sohbet</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --whatsapp-green: #25D366;
+            --whatsapp-light-green: #dcf8c6;
+            --whatsapp-dark: #075E54;
+            --whatsapp-chat-bg: #e5ddd5;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.2rem;
+        }
+
+            .card-header h3, .card-header h4 {
+                margin: 0;
+                font-weight: 600;
+            }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            border-color: var(--whatsapp-green);
+            color: white;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-whatsapp:hover {
+                background-color: var(--whatsapp-dark);
+                border-color: var(--whatsapp-dark);
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary-whatsapp {
+            background-color: #f0f0f0;
+            border-color: #e0e0e0;
+            color: #333;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary-whatsapp:hover {
+                background-color: #e0e0e0;
+                transform: translateY(-2px);
+            }
+
+        .header-section {
+            background-color: var(--whatsapp-dark);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 25px 25px;
+            margin-bottom: 30px;
+            background-image: linear-gradient(to right, var(--whatsapp-dark), #128C7E);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: var(--whatsapp-green);
+                box-shadow: 0 0 0 0.25rem rgba(37, 211, 102, 0.25);
+            }
+
+        textarea.form-control {
+            min-height: 120px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+            .file-upload-wrapper:hover {
+                border-color: var(--whatsapp-green);
+            }
+
+        .file-upload-input {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            opacity: 0;
+            cursor: pointer;
+            left: 0;
+            top: 0;
+        }
+
+        .file-upload-text {
+            margin-bottom: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .tip-box {
+            background-color: var(--whatsapp-light-green);
+            border-left: 5px solid var(--whatsapp-green);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .custom-tab {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+
+        .custom-tab-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+
+            .custom-tab-item.active {
+                color: var(--whatsapp-dark);
+                border-color: var(--whatsapp-green);
+            }
+
+        .custom-tab-content {
+            display: none;
+        }
+
+            .custom-tab-content.active {
+                display: block;
+            }
+
+        .person-badge {
+            background-color: var(--whatsapp-dark);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .person-badge:hover {
+                background-color: var(--whatsapp-green);
+                transform: translateY(-2px);
+            }
+
+        .date-badge {
+            background-color: var(--whatsapp-light-green);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--whatsapp-dark);
+            display: inline-block;
+        }
+
+        /* Chat Interface Styles */
+        .chat-interface {
+            display: flex;
+            flex-direction: column;
+            height: 680px;
+            max-height: 80vh;
+        }
+
+        .chat-header {
+            background-color: var(--whatsapp-dark);
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #128C7E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            background-color: var(--whatsapp-chat-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        } */
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .message-left {
+            justify-content: flex-start;
+        }
+
+        .message-right {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+            .message-content::before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                top: 10px;
+            }
+
+        .message-left .message-content {
+            background-color: white;
+            margin-right: auto;
+        }
+
+            .message-left .message-content::before {
+                border-width: 8px 10px 8px 0;
+                border-color: transparent white transparent transparent;
+                left: -10px;
+            }
+
+        .message-right .message-content {
+            background-color: var(--whatsapp-light-green);
+            margin-left: auto;
+        }
+
+            .message-right .message-content::before {
+                border-width: 8px 0 8px 10px;
+                border-color: transparent transparent transparent var(--whatsapp-light-green);
+                right: -10px;
+            }
+
+        .message-sender {
+            font-weight: bold;
+            color: var(--whatsapp-dark);
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: none;
+            margin-right: 10px;
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--whatsapp-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .chat-send-btn:hover {
+                background-color: var(--whatsapp-dark);
+                transform: scale(1.1);
+            }
+
+        .typing-indicator {
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #aaa;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+            .typing-dot:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .typing-dot:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .typing-dot:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+/* 
+        keyframes typingAnimation {
+            0%, 100%
+
+        {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+
+        } */
+
+        .setup-container,
+        .chat-container {
+            transition: all 0.5s ease;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1000;
+            border-radius: 15px;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid var(--whatsapp-light-green);
+            border-top: 8px solid var(--whatsapp-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        } */
+
+        .conversation-preview {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="mb-2">Yapay Sohbet</h1>
+                    <p class="mb-0">WhatsApp konuşmalarınızdaki kişilerle gerçek zamanlı sohbet edin</p>
+                </div>
+                <a href="@Url.Action("Index")" class="btn btn-outline-light px-4">
+                    <i class="fas fa-home me-2"></i> Ana Sayfa
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Setup Panel -->
+            <div class="col-lg-12 setup-container" id="setupPanel">
+                <div class="card mb-5">
+                    <div class="card-header bg-dark text-white">
+                        <h3><i class="fas fa-robot me-2"></i> Sohbeti Başlatın</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="chatSetupForm" enctype="multipart/form-data">
+                            <!-- Text Area Input -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">WhatsApp Konuşma Metni:</label>
+                                <textarea name="conversation" id="conversationText" class="form-control"
+                                          placeholder="WhatsApp konuşmanızı buraya yapıştırın..." rows="4"></textarea>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i> Yapay zeka bu konuşmayı analiz ederek kişilerin üsluplarını öğrenecek.
+                                </div>
+                            </div>
+
+                            <!-- Or Divider -->
+                            <div class="d-flex align-items-center my-4">
+                                <hr class="flex-grow-1">
+                                <span class="mx-3 text-muted">VEYA</span>
+                                <hr class="flex-grow-1">
+                            </div>
+
+                            <!-- File Upload -->
+                            <div class="file-upload-wrapper mb-4">
+                                <input type="file" name="chatFile" id="chatFile" accept=".txt" class="file-upload-input">
+                                <div class="text-center">
+                                    <div class="file-upload-text"><i class="fas fa-cloud-upload-alt me-2"></i> Dosya Yükle</div>
+                                    <p class="text-muted mb-2">WhatsApp'tan dışa aktardığınız .txt dosyasını buraya sürükleyin</p>
+                                    <div class="btn btn-whatsapp">Dosya Seç</div>
+                                </div>
+                            </div>
+
+                            <!-- Person Name Input and Day Count -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Kimle Konuşmak İstiyorsunuz:</label>
+                                    <input type="text" name="personName" id="personName" class="form-control" placeholder="Örn: Ahmet, Anne, Zeynep..." />
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i> Konuşmada görünen tam ismi yazın.
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Analiz Edilecek Süre:</label>
+                                    <select name="dayCount" id="dayCount" class="form-select">
+                                        <option value="1">Son 1 gün</option>
+                                        <option value="2">Son 2 gün</option>
+                                        <option value="3" selected>Son 3 gün</option>
+                                        <option value="7">Son 1 hafta</option>
+                                        <option value="14">Son 2 hafta</option>
+                                        <option value="30">Son 1 ay</option>
+                                        <option value="90">Son 3 ay</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Detected Users Section (Hidden initially) -->
+                            <div id="detectedUsersSection" class="card mb-4 d-none">
+                                <div class="card-header bg-info text-white">
+                                    <h4><i class="fas fa-users me-2"></i> Tespit Edilen Kişiler</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p>Konuşmada şu kişiler tespit edildi. Kimle konuşmak istediğinizi seçin:</p>
+                                    <div id="detectedUsersList" class="mt-3">
+                                        <!-- Person badges will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tip Box -->
+                            <div class="tip-box">
+                                <h5><i class="fas fa-lightbulb me-2"></i> İpucu</h5>
+                                <p class="mb-0">Yapay zekanın daha doğal yanıtlar verebilmesi için kişinin en az 10-15 mesajının bulunduğu bir konuşma kullanmanızı öneririz. Konuşma uzunluğu ve kişiye özgü ifadeler, sohbet kalitesini artırır.</p>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="@Url.Action("Index")" class="btn btn-secondary-whatsapp">
+                                    <i class="fas fa-arrow-left me-2"></i> Geri
+                                </a>
+                                <button type="button" id="detectUsersBtn" class="btn btn-info text-white">
+                                    <i class="fas fa-user-check me-2"></i> Kişileri Tespit Et
+                                </button>
+                                <button type="button" id="startChatBtn" class="btn btn-whatsapp">
+                                    <i class="fas fa-comment-dots me-2"></i> Sohbeti Başlat
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="col-lg-12 chat-container d-none" id="chatPanel">
+                <div class="card position-relative">
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="loading-overlay d-none">
+                        <div class="loading-spinner mb-3"></div>
+                        <h4>Sohbet Hazırlanıyor...</h4>
+                        <p>Kişi analiz ediliyor, lütfen bekleyin.</p>
+                    </div>
+
+                    <!-- Chat Interface Header -->
+                    <div class="chat-header">
+                        <div class="avatar" id="personAvatar">A</div>
+                        <div>
+                            <h4 id="chatPersonName">Kişi İsmi</h4>
+                            <small id="chatStatus">Çevrimiçi</small>
+                        </div>
+                        <div class="ms-auto">
+                            <button id="backToSetupBtn" class="btn btn-sm btn-outline-light">
+                                <i class="fas fa-arrow-left me-2"></i> Geri
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Body -->
+                    <div class="chat-body" id="chatMessages">
+                        <!-- Welcome message -->
+                        <div class="message message-left">
+                            <div class="message-content">
+                                <div class="message-sender" id="welcomeSender">Yapay Sohbet</div>
+                                <div>Merhaba! Yapay Sohbet'e hoş geldiniz. Konuşma verileriniz yüklendi ve analiz edildi. Şimdi sohbete başlayabilirsiniz!</div>
+                                <div class="message-time">@DateTime.Now.ToString("HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Footer -->
+                    <div class="chat-footer">
+                        <input type="text" id="messageInput" class="chat-input" placeholder="Mesajınızı yazın..." />
+                        <button id="sendMessageBtn" class="chat-send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Original Conversation Panel -->
+                <div class="card mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h4>
+                            <i class="fas fa-file-alt me-2"></i>
+                            Analiz Edilen Konuşma
+                            <button class="btn btn-sm btn-outline-light float-end" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConversation">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="collapse" id="collapseConversation">
+                        <div class="card-body">
+                            <div class="conversation-preview" id="originalConversation">
+                                @if (string.IsNullOrEmpty(ViewBag.OriginalConversation))
+                                {
+                                    <p class="text-danger">Konuşma metni yok!</p>
+                                }
+                                else
+                                {
+                                    <pre>@ViewBag.OriginalConversation</pre>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>WhatsApp Sohbet Analizi</h5>
+                    <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hızlı Linkler</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Analyze")" class="text-white">Konuşma Analizi</a></li>
+                        <li><a href="@Url.Action("SuggestResponses")" class="text-white">Cevap Önerileri</a></li>
+                        <li><a href="@Url.Action("ArtificialChat")" class="text-white">Yapay Sohbet</a></li>
+                        <li><a href="@Url.Action("Help")" class="text-white">Yardım</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@whatsappanaliz.com</li>
+                        <li><i class="fas fa-phone me-2"></i> +90 212 123 4567</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-3">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+                // DOM Elements
+        const setupPanel = document.getElementById('setupPanel');
+        const chatPanel = document.getElementById('chatPanel');
+        const conversationText = document.getElementById('conversationText');
+        const chatFile = document.getElementById('chatFile');
+        const personName = document.getElementById('personName');
+        const dayCount = document.getElementById('dayCount');
+        const detectUsersBtn = document.getElementById('detectUsersBtn');
+        const startChatBtn = document.getElementById('startChatBtn');
+        const backToSetupBtn = document.getElementById('backToSetupBtn');
+        const detectedUsersSection = document.getElementById('detectedUsersSection');
+        const detectedUsersList = document.getElementById('detectedUsersList');
+        const chatPersonName = document.getElementById('chatPersonName');
+        const personAvatar = document.getElementById('personAvatar');
+        const welcomeSender = document.getElementById('welcomeSender');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const originalConversation = document.getElementById('originalConversation');
+
+        // Variables
+        let selectedPerson = '';
+        let conversationData = '';
+        let isAiTyping = false;
+        let chatHistory = [];
+        let rawFileData = null; // To store the raw file data for future requests
+
+        // File upload visual feedback and data reading
+        if (chatFile) {
+            chatFile.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const fileName = this.files[0].name;
+                    document.querySelector('.file-upload-text').innerHTML = '<i class="fas fa-file-alt me-2"></i> ' + fileName;
+                    document.querySelector('.file-upload-wrapper').style.borderColor = 'var(--whatsapp-green)';
+
+                    // Read file content directly
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        rawFileData = e.target.result;
+                        conversationData = rawFileData;
+
+                        // Display original conversation
+                        originalConversation.textContent = conversationData;
+
+                        // Also set the textarea content for backup
+                        conversationText.value = conversationData;
+                    };
+                    reader.readAsText(this.files[0]);
+                } else {
+                    document.querySelector('.file-upload-text').innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> Dosya Yükle';
+                    document.querySelector('.file-upload-wrapper').style.borderColor = '#ddd';
+                    rawFileData = null;
+                }
+            });
+        }
+
+        // Detect users from conversation
+        detectUsersBtn.addEventListener('click', async function() {
+            // Get conversation text
+            let conversation = conversationText.value;
+            const file = chatFile.files[0];
+
+            if (!conversation && !file && !rawFileData) {
+                alert('Lütfen bir konuşma metni girin veya bir dosya yükleyin.');
+                return;
+            }
+
+            // If we have raw file data but no text input, use the raw file data
+            if (!conversation && rawFileData) {
+                conversation = rawFileData;
+            }
+
+            loadingOverlay.classList.remove('d-none');
+            setupPanel.style.opacity = '0.5';
+
+            try {
+                // Create FormData for file upload
+                const formData = new FormData();
+                if (file) {
+                    formData.append('chatFile', file);
+                } else {
+                    formData.append('conversation', conversation);
+                }
+                formData.append('dayCount', dayCount.value);
+
+                // Send request to detect users
+                const response = await fetch('/api/ChatAnalysis/DetectUsers', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Kişiler tespit edilirken bir hata oluştu.');
+                }
+
+                const data = await response.json();
+
+                // Save conversation data
+                conversationData = data.conversationText || conversation;
+
+                // Display original conversation
+                originalConversation.textContent = conversationData;
+
+                // Display users
+                detectedUsersList.innerHTML = '';
+                data.speakers.forEach(speaker => {
+                    const badge = document.createElement('span');
+                    badge.className = 'person-badge';
+                    badge.innerHTML = `<i class="fas fa-user me-1"></i> ${speaker.name} (${speaker.messageCount} mesaj)`;
+                    badge.addEventListener('click', function() {
+                        selectPerson(speaker.name);
+                    });
+                    detectedUsersList.appendChild(badge);
+                });
+
+                // Show detected users section
+                detectedUsersSection.classList.remove('d-none');
+
+                // Scroll to detected users section
+                detectedUsersSection.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hata: ' + error.message);
+            } finally {
+                loadingOverlay.classList.add('d-none');
+                setupPanel.style.opacity = '1';
+            }
+        });
+
+        // Select person from badge
+        function selectPerson(name) {
+            selectedPerson = name;
+            personName.value = name;
+
+            // Highlight selected badge
+            const badges = detectedUsersList.querySelectorAll('.person-badge');
+            badges.forEach(badge => {
+                if (badge.textContent.includes(name)) {
+                    badge.style.backgroundColor = 'var(--whatsapp-green)';
+                } else {
+                    badge.style.backgroundColor = 'var(--whatsapp-dark)';
+                }
+            });
+
+            // Scroll to personName input
+            personName.scrollIntoView({ behavior: 'smooth' });
+            personName.focus();
+        }
+
+        // Start chat button click event
+        startChatBtn.addEventListener('click', function() {
+            // Validate inputs
+            const chatName = personName.value.trim();
+            if (!chatName) {
+                alert('Lütfen konuşmak istediğiniz kişiyi seçin.');
+                return;
+            }
+
+            if (!conversationData && !conversationText.value && !chatFile.files[0] && !rawFileData) {
+                alert('Lütfen bir konuşma metni girin veya bir dosya yükleyin.');
+                return;
+            }
+
+            // If conversation data is not set yet, set it from input
+            if (!conversationData) {
+                conversationData = conversationText.value || rawFileData;
+            }
+
+            // Show loading overlay
+            loadingOverlay.classList.remove('d-none');
+
+            // Update chat interface with person name
+            chatPersonName.textContent = chatName;
+            welcomeSender.textContent = chatName;
+
+            // Set avatar with person's initial
+            personAvatar.textContent = chatName.charAt(0).toUpperCase();
+
+            // Show chat panel and hide setup panel
+            setupPanel.classList.add('d-none');
+            chatPanel.classList.remove('d-none');
+
+            // Hide loading overlay after a short delay (simulating preparation)
+            setTimeout(() => {
+                loadingOverlay.classList.add('d-none');
+
+                // Focus on message input
+                messageInput.focus();
+
+                // Add welcome message from selected person
+                addAiMessage(`Merhaba! Ben ${chatName}. Nasıl yardımcı olabilirim?`);
+            }, 2000);
+        });
+
+        // Back to setup button click event
+        backToSetupBtn.addEventListener('click', function() {
+            // Hide chat panel and show setup panel
+            chatPanel.classList.add('d-none');
+            setupPanel.classList.remove('d-none');
+
+            // Clear chat messages except welcome message
+            while (chatMessages.children.length > 1) {
+                chatMessages.removeChild(chatMessages.lastChild);
+            }
+
+            // Clear chat history
+            chatHistory = [];
+        });
+
+        // Send message on button click
+        sendMessageBtn.addEventListener('click', sendMessage);
+
+        // Send message on Enter key press
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Send message function
+        async function sendMessage() {
+            // Get message text
+            const messageText = messageInput.value.trim();
+
+            // Validate message
+            if (!messageText || isAiTyping) {
+                return;
+            }
+
+            // Add user message to chat
+            addUserMessage(messageText);
+
+            // Clear input
+            messageInput.value = '';
+
+            // Add to chat history
+            chatHistory.push({ role: 'user', message: messageText });
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Set AI typing flag
+            isAiTyping = true;
+
+            try {
+                // Create request payload
+                const payload = {
+                    conversation: conversationData,
+                    personName: selectedPerson || personName.value,
+                    userMessage: messageText,
+                    chatHistory: chatHistory,
+                    dayCount: dayCount.value // Include dayCount with each request
+                };
+
+                // Send request to get AI response
+                const response = await fetch('/api/ChatAnalysis/GenerateResponse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Cevap oluşturulurken bir hata oluştu.');
+                }
+
+                const data = await response.json();
+
+                // Hide typing indicator
+                hideTypingIndicator();
+
+                // Delay response for a more natural feel
+                setTimeout(() => {
+                    // Add AI message to chat
+                    addAiMessage(data.response);
+
+                    // Add to chat history
+                    chatHistory.push({ role: 'assistant', message: data.response });
+
+                    // Reset AI typing flag
+                    isAiTyping = false;
+                }, 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                // Hide typing indicator
+                hideTypingIndicator();
+
+                // Show error message in chat
+                addErrorMessage('Üzgünüm, bir hata oluştu: ' + error.message);
+
+                // Reset AI typing flag
+                isAiTyping = false;
+            }
+        }
+
+        // Add user message to chat
+        function addUserMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-right';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div>${message}</div>
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            scrollToBottom();
+        }
+
+        // Add AI message to chat
+        function addAiMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-left';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-sender">${personName.value}</div>
+                    <div>${formatMessage(message)}</div>
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            scrollToBottom();
+        }
+
+        // Add error message to chat
+        function addErrorMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-left';
+            messageDiv.innerHTML = `
+                <div class="message-content" style="background-color: #ffebee;">
+                    <div class="message-sender">Sistem</div>
+                    <div>${message}</div>
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            scrollToBottom();
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typingDiv);
+
+            // Scroll to bottom
+            scrollToBottom();
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Format message (convert URLs, emojis, etc.)
+        function formatMessage(message) {
+            // Convert URLs to clickable links
+            message = message.replace(
+                /(https?:\/\/[^\s]+)/g,
+                '<a href="$1" target="_blank" class="text-primary">$1</a>'
+            );
+
+            // Convert line breaks to <br>
+            message = message.replace(/\n/g, '<br>');
+
+            return message;
+        }
+
+        // Get current time in HH:MM format
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Scroll chat to bottom
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to display original conversation manually from file or text area
+        function displayOriginalConversation() {
+            if (conversationData) {
+                originalConversation.textContent = conversationData;
+
+                // Show the conversation section if it's collapsed
+                const collapseConversation = document.getElementById('collapseConversation');
+                if (collapseConversation && !collapseConversation.classList.contains('show')) {
+                    collapseConversation.classList.add('show');
+                }
+            } else if (conversationText.value) {
+                originalConversation.textContent = conversationText.value;
+                conversationData = conversationText.value;
+            } else if (rawFileData) {
+                originalConversation.textContent = rawFileData;
+                conversationData = rawFileData;
+            } else {
+                originalConversation.innerHTML = '<p class="text-danger">Konuşma metni yok!</p>';
+            }
+        }
+
+        // Call this when needed to ensure the conversation is displayed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add this click handler to any buttons that should update the display
+            const updateButtons = [detectUsersBtn, startChatBtn];
+            updateButtons.forEach(button => {
+                button.addEventListener('click', displayOriginalConversation);
+            });
+        });
+    </script>
+</body>
+</html>

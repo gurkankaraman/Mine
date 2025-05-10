@@ -132,6 +132,14 @@ namespace ChatInsightGemini.Controllers
         }
 
 
+        // Yapay Sohbet sayfası - GET
+        [HttpGet]
+        public IActionResult ArtificialChat()
+        {
+            return View();
+        }
+
+        
         private async Task<(string ProcessedText, List<DateTime> IncludedDates)> ProcessConversationInput(string conversation, IFormFile chatFile, int dayCount)
         {
             string inputText = "";

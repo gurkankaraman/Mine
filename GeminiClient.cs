@@ -119,4 +119,103 @@ public class GeminiClient
         dynamic result = JsonConvert.DeserializeObject(responseContent);
         return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
     }
+
+    public async Task<string> GenerateArtificialResponseAsync(string conversation, string personName)
+    {
+        string prompt = $"Aşağıdaki WhatsApp konuşmasını incele ve '{personName}' adlı kişinin üslubunu, kullandığı kelimeleri, emoji kullanım şeklini ve genel iletişim tarzını taklit ederek yeni bir cevap oluştur. Cevap bu kişinin gerçekten yazmış olabileceği gibi doğal olmalı, aynı yazım tarzı ve konuşma şekliyle:\n\n{conversation}";
+
+        // Gemini API'si için JSON payload hazırla
+        var payload = new
+        {
+            contents = new[]
+            {
+                new
+                {
+                    role = "user",
+                    parts = new[]
+                    {
+                        new { text = prompt }
+                    }
+                }
+            }
+        };
+
+        // JSON'a çevir
+        var json = JsonConvert.SerializeObject(payload);
+
+        // İstek hazırla
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{_url}?key={_apiKey}" // API key burada query string içinde
+        );
+
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // İstek gönder ve kontrol et
+        var response = await _httpClient.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
+        }
+
+        dynamic result = JsonConvert.DeserializeObject(responseContent);
+        return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+    }
+
+    public async Task<string> GenerateChatResponseAsync(string conversation, string personName, string userMessage, string chatHistory = "")
+    {
+        // Yapay cevap oluşturmak için daha detaylı bir prompt
+        string prompt = $@"Aşağıdaki WhatsApp konuşmasını ve '{personName}' adlı kişinin konuşma stilini analiz et:
+
+{conversation}
+
+Bu kişiyle şu anda sohbet ediyorum. Bana kişinin yazım tarzına, kelime seçimlerine, emoji kullanımına, konuşma düzenine ve kişiliğine uygun şekilde bir yanıt ver.
+
+{chatHistory}
+
+Ben: {userMessage}
+
+{personName}:";
+
+        // Gemini API'si için JSON payload hazırla
+        var payload = new
+        {
+            contents = new[]
+            {
+                new
+                {
+                    role = "user",
+                    parts = new[]
+                    {
+                        new { text = prompt }
+                    }
+                }
+            }
+        };
+
+        // JSON'a çevir
+        var json = JsonConvert.SerializeObject(payload);
+
+        // İstek hazırla
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{_url}?key={_apiKey}" // API key burada query string içinde
+        );
+
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // İstek gönder ve kontrol et
+        var response = await _httpClient.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
+        }
+
+        dynamic result = JsonConvert.DeserializeObject(responseContent);
+        return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+    }
 }
