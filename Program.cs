@@ -1,4 +1,5 @@
 using ChatInsightGemini;
+using ChatInsightGemini.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<GeminiClient>();
 builder.Services.AddControllersWithViews(); // sadece AddControllers deðil!
+builder.Services.AddScoped<ConversationProcessor>();
 
 
 var app = builder.Build();

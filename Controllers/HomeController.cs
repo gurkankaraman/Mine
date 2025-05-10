@@ -1,14 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChatInsightGemini.Services;
+using Microsoft.AspNetCore.Mvc;
+
+using ChatInsightGemini.Controllers;
+
 
 namespace ChatInsightGemini.Controllers
 {
     public class HomeController : Controller
     {
         private readonly GeminiClient _geminiClient;
+        private readonly ConversationProcessor _conversationProcessor;
 
-        public HomeController(GeminiClient geminiClient)
+        public HomeController(GeminiClient geminiClient, ConversationProcessor conversationProcessor)
         {
             _geminiClient = geminiClient;
+            _conversationProcessor = conversationProcessor;
         }
 
         // Ana sayfa - sadece seçim sayfasını göster
@@ -32,7 +38,7 @@ namespace ChatInsightGemini.Controllers
             try
             {
                 // Metni işle
-                var (processedText, includedDates) = await ProcessConversationInput(conversation, chatFile, dayCount);
+                var (processedText, includedDates) = await _conversationProcessor.ProcessInputAsync(conversation, chatFile, dayCount);
 
                 // Boş metin kontrolü
                 if (string.IsNullOrWhiteSpace(processedText))
@@ -47,15 +53,28 @@ namespace ChatInsightGemini.Controllers
                     }
                     return View();
                 }
+                // Temel metrikleri hesapla
+                var (basicMetrics, mostUsedWord, mostUsedEmoji, speakerStats) = _conversationProcessor.GetAdvancedMetrics(processedText, includedDates);
+
+                // Sayısal hesaplar
+                var numericMetrics = _conversationProcessor.CalculateBasicMetrics(processedText, includedDates);
+
 
                 // Analiz işlemine devam et
+
                 var result = await _geminiClient.AnalyzeChatAsync(processedText, type);
 
                 // ViewBag değerlerini ata
+                ViewBag.NumericAnalysis = basicMetrics;
+                ViewBag.MostUsedWord = mostUsedWord;
+                ViewBag.MostUsedEmoji = mostUsedEmoji;
+                ViewBag.SpeakerStats = speakerStats;
                 ViewBag.AnalysisResult = result;
+                ViewBag.NumericAnalysis = numericMetrics;
                 ViewBag.FilteredConversation = processedText;
                 ViewBag.IncludedDates = includedDates;
                 ViewBag.DayCount = dayCount;
+
 
                 return View();
             }

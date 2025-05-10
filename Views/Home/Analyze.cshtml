@@ -344,6 +344,8 @@
                                 <option value="general">Genel Analiz</option>
                             </select>
                             <input type="hidden" name="type" id="selected-type" value="flirt">
+
+
                         </div>
                     </div>
 
@@ -365,6 +367,7 @@
                             <i class="fas fa-chart-pie me-2"></i> Analiz Et
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -404,6 +407,35 @@
                             </ul>
                         </div>
                     </div>
+                }
+                @if (ViewBag.NumericAnalysis != null && ((Dictionary<string, double>)ViewBag.NumericAnalysis).Any())
+                {
+                    <h4>İstatistiksel Veriler:</h4>
+                    <ul>
+                        @foreach (var item in (Dictionary<string, double>)ViewBag.NumericAnalysis)
+                        {
+                            <li><strong>@item.Key:</strong> @item.Value</li>
+                        }
+                    </ul>
+                }
+
+                @if (ViewBag.MostUsedWord != null)
+                {
+                    <p><strong>En Çok Kullanılan Kelime:</strong> @ViewBag.MostUsedWord</p>
+                }
+                @if (ViewBag.MostUsedEmoji != null)
+                {
+                    <p><strong>En Çok Kullanılan Emoji:</strong> @ViewBag.MostUsedEmoji</p>
+                }
+                @if (ViewBag.SpeakerStats != null && ((Dictionary<string, int>)ViewBag.SpeakerStats).Any())
+                {
+                    <h4>Katılımcıların Mesaj Sayıları:</h4>
+                    <ul>
+                        @foreach (var kvp in (Dictionary<string, int>)ViewBag.SpeakerStats)
+                        {
+                            <li><strong>@kvp.Key:</strong> @kvp.Value mesaj</li>
+                        }
+                    </ul>
                 }
 
                 <div class="analysis-section">
