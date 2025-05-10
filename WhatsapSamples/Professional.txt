@@ -1,0 +1,31 @@
+6.05.2025 09:15 - "Ayşe Müdür": Günaydın Mehmet Bey, raporun tamamlandı mı?
+6.05.2025 09:20 - "Mehmet": Günaydın Ayşe Hanım. Raporun %90'ı tamamlandı, öğleden sonra bitirip size ileteceğim.
+6.05.2025 09:22 - "Ayşe Müdür": Teşekkürler. Bu rapor yarınki toplantı için çok önemli, lütfen detaylı olsun.
+6.05.2025 09:25 - "Mehmet": Endişelenmeyin, tüm detayları içerecek şekilde hazırlıyorum. Grafikleri de ekledim.
+6.05.2025 14:40 - "Mehmet": Ayşe Hanım, raporu tamamladım. Mail olarak gönderdim, isterseniz çıktısını da alabilirim.
+6.05.2025 14:45 - "Ayşe Müdür": Teşekkürler Mehmet Bey. Şimdi inceliyorum. Çıktıya gerek yok, dijital olarak değerlendireceğiz.
+6.05.2025 14:50 - "Mehmet": Anlaşıldı. Başka bir konuda yardıma ihtiyacınız olursa lütfen bildirin.
+6.05.2025 15:05 - "Ayşe Müdür": Rapor genel olarak iyi görünüyor, fakat satış projeksiyonlarında bir tutarsızlık fark ettim. 3. çeyrek rakamlarını kontrol eder misiniz?
+6.05.2025 15:10 - "Mehmet": Hemen kontrol ediyorum, teşekkürler bilgilendirme için.
+
+7.05.2025 10:30 - "Ayşe Müdür": Mehmet Bey, bugün 14:00'te müşteri sunumu için hazır olalım. Toplantı odasını ayarladım.
+7.05.2025 10:35 - "Mehmet": Tamam Ayşe Hanım. Sunumu son haline getirdim, teknik ekipmanı da kontrol edeceğim.
+7.05.2025 10:38 - "Ayşe Müdür": Mükemmel. Pazarlama departmanından Leyla Hanım da katılacak. Onunla koordine olun lütfen.
+7.05.2025 10:40 - "Mehmet": Anlaşıldı, Leyla Hanım'la iletişime geçeceğim.
+7.05.2025 13:45 - "Mehmet": Ayşe Hanım, toplantı odası hazır. Projektör ve ses sistemini test ettim, her şey çalışıyor.
+7.05.2025 13:48 - "Ayşe Müdür": Harika, 5 dakika içinde oradayım.
+7.05.2025 16:30 - "Ayşe Müdür": Sunum çok başarılıydı, teşekkür ederim. Müşteri teklifimizi değerlendirecek.
+7.05.2025 16:35 - "Mehmet": Çok sevindim. Ekip olarak iyi bir iş çıkardık. Müşterinin sorduğu ek analizleri de yarına hazırlayacağım.
+7.05.2025 16:38 - "Ayşe Müdür": Lütfen önceliğiniz bu olsun. Yarın sabah 10:00'da kısa bir toplantı yapalım ve ilerlemeyi değerlendirelim.
+7.05.2025 16:40 - "Mehmet": Takvimime ekledim, yarın 10:00'da görüşmek üzere.
+
+8.05.2025 09:15 - "Mehmet": Günaydın Ayşe Hanım. Müşteri için istenen ek analizleri tamamladım, toplantı öncesi incelemeniz için gönderiyorum.
+8.05.2025 09:22 - "Ayşe Müdür": Günaydın. Hızlı çalışmanız için teşekkürler, hemen göz atıyorum.
+8.05.2025 09:40 - "Ayşe Müdür": Analizler çok detaylı olmuş, tam da müşterinin istediği gibi. Sadece maliyet projeksiyonlarında biraz daha açıklama ekleyebilir miyiz?
+8.05.2025 09:45 - "Mehmet": Elbette, hemen revize ediyorum.
+8.05.2025 09:55 - "Mehmet": Revizyonu tamamladım ve dosyayı güncelledim. Ayrıca, finans departmanından gelen son verileri de ekledim.
+8.05.2025 10:00 - "Ayşe Müdür": Toplantı odasındayım, gelirken raporun son halini getirebilir misiniz?
+8.05.2025 10:02 - "Mehmet": Hemen geliyorum, çıktıları da aldım.
+8.05.2025 12:30 - "Ayşe Müdür": Toplantı verimli geçti. Öğleden sonra yönetim kuruluna bir özet hazırlayalım. 14:00'te ofisimde buluşalım.
+8.05.2025 12:35 - "Mehmet": Tamam Ayşe Hanım. Ben şimdi öğle yemeğine çıkıyorum, 14:00'te ofisinizde olacağım.
+8.05.2025 13:55 - "Mehmet": Toplantı için hazırım, 5 dakika içinde ofisinizde olacağım.
