@@ -261,8 +261,6 @@
             transform: translateY(0);
         }
 
-        }
-
         .message-left {
             justify-content: flex-start;
         }
@@ -559,9 +557,6 @@
                                 <a href="@Url.Action("Index")" class="btn btn-secondary-whatsapp">
                                     <i class="fas fa-arrow-left me-2"></i> Geri
                                 </a>
-                                <button type="button" id="detectUsersBtn" class="btn btn-info text-white">
-                                    <i class="fas fa-user-check me-2"></i> Kişileri Tespit Et
-                                </button>
                                 <button type="button" id="startChatBtn" class="btn btn-whatsapp">
                                     <i class="fas fa-comment-dots me-2"></i> Sohbeti Başlat
                                 </button>
@@ -739,80 +734,6 @@
                 }
             });
         }
-
-        // Detect users from conversation
-        detectUsersBtn.addEventListener('click', async function() {
-            // Get conversation text
-            let conversation = conversationText.value;
-            const file = chatFile.files[0];
-
-            if (!conversation && !file && !rawFileData) {
-                alert('Lütfen bir konuşma metni girin veya bir dosya yükleyin.');
-                return;
-            }
-
-            // If we have raw file data but no text input, use the raw file data
-            if (!conversation && rawFileData) {
-                conversation = rawFileData;
-            }
-
-            loadingOverlay.classList.remove('d-none');
-            setupPanel.style.opacity = '0.5';
-
-            try {
-                // Create FormData for file upload
-                const formData = new FormData();
-                if (file) {
-                    formData.append('chatFile', file);
-                } else {
-                    formData.append('conversation', conversation);
-                }
-                formData.append('dayCount', dayCount.value);
-
-                // Send request to detect users
-                const response = await fetch('/api/ChatAnalysis/DetectUsers', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('Kişiler tespit edilirken bir hata oluştu.');
-                }
-
-                const data = await response.json();
-
-                // Save conversation data
-                conversationData = data.conversationText || conversation;
-
-                // Display original conversation
-                originalConversation.textContent = conversationData;
-
-                // Display users
-                detectedUsersList.innerHTML = '';
-                data.speakers.forEach(speaker => {
-                    const badge = document.createElement('span');
-                    badge.className = 'person-badge';
-                    badge.innerHTML = `<i class="fas fa-user me-1"></i> ${speaker.name} (${speaker.messageCount} mesaj)`;
-                    badge.addEventListener('click', function() {
-                        selectPerson(speaker.name);
-                    });
-                    detectedUsersList.appendChild(badge);
-                });
-
-                // Show detected users section
-                detectedUsersSection.classList.remove('d-none');
-
-                // Scroll to detected users section
-                detectedUsersSection.scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Hata: ' + error.message);
-            } finally {
-                loadingOverlay.classList.add('d-none');
-                setupPanel.style.opacity = '1';
-            }
-        });
 
         // Select person from badge
         function selectPerson(name) {
@@ -1105,15 +1026,6 @@
                 originalConversation.innerHTML = '<p class="text-danger">Konuşma metni yok!</p>';
             }
         }
-
-        // Call this when needed to ensure the conversation is displayed
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add this click handler to any buttons that should update the display
-            const updateButtons = [detectUsersBtn, startChatBtn];
-            updateButtons.forEach(button => {
-                button.addEventListener('click', displayOriginalConversation);
-            });
-        });
     </script>
 </body>
 </html>

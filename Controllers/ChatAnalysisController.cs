@@ -23,46 +23,6 @@ public class ChatAnalysisController : ControllerBase
         return Ok(new { analysis = result });
     }
 
-    [HttpPost("DetectUsers")]
-    public async Task<IActionResult> DetectUsers([FromForm] IFormFile chatFile, [FromForm] string conversation, [FromForm] int dayCount)
-    {
-        try
-        {
-            // Konuşma metnini işle
-            var (processedText, includedDates) = await _conversationProcessor.ProcessInputAsync(conversation, chatFile, dayCount);
-
-            if (string.IsNullOrWhiteSpace(processedText))
-            {
-                return BadRequest(new { error = "Geçerli bir konuşma metni bulunamadı." });
-            }
-
-            // Konuşmadaki kişileri tespit et
-            var speakerStats = _conversationProcessor.ExtractSpeakersFromConversation(processedText);
-
-            if (speakerStats.Count == 0)
-            {
-                return BadRequest(new { error = "Konuşmada hiçbir kişi tespit edilemedi." });
-            }
-
-            // Kişileri mesaj sayılarına göre sırala
-            var speakers = speakerStats
-                .Select(kvp => new { name = kvp.Key, messageCount = kvp.Value })
-                .OrderByDescending(s => s.messageCount)
-                .ToList();
-
-            return Ok(new
-            {
-                speakers = speakers,
-                conversationText = processedText,
-                includedDates = includedDates
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = $"Bir hata oluştu: {ex.Message}" });
-        }
-    }
-
     [HttpPost("GenerateResponse")]
     public async Task<IActionResult> GenerateResponse([FromBody] ChatResponseRequest request)
     {
@@ -102,20 +62,20 @@ public class ChatAnalysisController : ControllerBase
 
 public class ChatRequest
 {
-    public string Conversation { get; set; }
-    public string Type { get; set; }
+    public required string Conversation { get; set; }
+    public required string Type { get; set; }
 }
 
 public class ChatResponseRequest
 {
-    public string Conversation { get; set; }
-    public string PersonName { get; set; }
-    public string UserMessage { get; set; }
-    public List<ChatMessage> ChatHistory { get; set; }
+    public required string Conversation { get; set; }
+    public string? PersonName { get; set; }
+    public string? UserMessage { get; set; }
+    public List<ChatMessage>? ChatHistory { get; set; }
 }
 
 public class ChatMessage
 {
-    public string Role { get; set; } // "user" veya "assistant"
-    public string Message { get; set; }
+    public string? Role { get; set; }
+    public string? Message { get; set; }
 }

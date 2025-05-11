@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace ChatInsightGemini;
@@ -13,8 +14,8 @@ public class GeminiClient
     public GeminiClient(IConfiguration config, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _apiKey = config["Gemini:ApiKey"];
-        _url = config["Gemini:Url"];
+        _apiKey = config["Gemini:ApiKey"] ?? throw new ArgumentNullException("Gemini:ApiKey is missing in configuration.");
+        _url = config["Gemini:Url"] ?? throw new ArgumentNullException("Gemini:Url is missing in configuration.");
     }
 
     public async Task<string> AnalyzeChatAsync(string conversation, string analysisType)
@@ -72,7 +73,7 @@ public class GeminiClient
             throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
         }
 
-        dynamic result = JsonConvert.DeserializeObject(responseContent);
+        dynamic? result = JsonConvert.DeserializeObject(responseContent);
         return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
     }
 
@@ -116,82 +117,53 @@ public class GeminiClient
             throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
         }
 
-        dynamic result = JsonConvert.DeserializeObject(responseContent);
-        return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
-    }
-
-    public async Task<string> GenerateArtificialResponseAsync(string conversation, string personName)
-    {
-        string prompt = $"Aşağıdaki WhatsApp konuşmasını incele ve '{personName}' adlı kişinin üslubunu, kullandığı kelimeleri, emoji kullanım şeklini ve genel iletişim tarzını taklit ederek yeni bir cevap oluştur. Cevap bu kişinin gerçekten yazmış olabileceği gibi doğal olmalı, aynı yazım tarzı ve konuşma şekliyle:\n\n{conversation}";
-
-        // Gemini API'si için JSON payload hazırla
-        var payload = new
-        {
-            contents = new[]
-            {
-                new
-                {
-                    role = "user",
-                    parts = new[]
-                    {
-                        new { text = prompt }
-                    }
-                }
-            }
-        };
-
-        // JSON'a çevir
-        var json = JsonConvert.SerializeObject(payload);
-
-        // İstek hazırla
-        var request = new HttpRequestMessage(
-            HttpMethod.Post,
-            $"{_url}?key={_apiKey}" // API key burada query string içinde
-        );
-
-        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        // İstek gönder ve kontrol et
-        var response = await _httpClient.SendAsync(request);
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
-        }
-
-        dynamic result = JsonConvert.DeserializeObject(responseContent);
+        dynamic? result = JsonConvert.DeserializeObject(responseContent);
         return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
     }
 
     public async Task<string> GenerateChatResponseAsync(string conversation, string personName, string userMessage, string chatHistory = "")
     {
-        // Yapay cevap oluşturmak için daha detaylı bir prompt
-        string prompt = $@"Aşağıdaki WhatsApp konuşmasını ve '{personName}' adlı kişinin konuşma stilini analiz et:
+        // Daha doğal ve gerçekçi cevaplar için iyileştirilmiş prompt
+        string prompt = $@"Bu bir WhatsApp sohbet simülasyonudur. '{personName}' adlı kişinin yerine geçeceksin. 
 
-{conversation}
+        AŞAĞIDAKİ TALİMATLAR ÇOK ÖNEMLİDİR, TAM OLARAK UYGULANMALIDIR:
+        1. Asla açıklama yapmayacaksın ve asla bir yapay zeka olduğunu belirtmeyeceksin
+        2. Sadece '{personName}' olarak yanıt vereceksin
+        3. Yanıtın sadece '{personName}'in vereceği yanıt olmalı - hiçbir başlık, etiket veya açıklama ekleme
+        4. Gerçekçi bir WhatsApp sohbeti gibi kısa ve doğal cevaplar ver (genellikle 1-3 cümle) 
+        5. '{personName}'in tarzını taklit et: emojileri, kısaltmaları, yazım hatalarını, noktalama işaretlerini ve hitap şeklini aynen kullan
+        6. Asla uzun açıklamalar, analizler veya yapay zeka çıktısı gibi görünen metinler yazma
 
-Bu kişiyle şu anda sohbet ediyorum. Bana kişinin yazım tarzına, kelime seçimlerine, emoji kullanımına, konuşma düzenine ve kişiliğine uygun şekilde bir yanıt ver.
+        İşte '{personName}'in yer aldığı WhatsApp konuşması:
+        {conversation}
 
-{chatHistory}
+        İşte şu anki sohbet geçmişimiz:
+        {chatHistory}
 
-Ben: {userMessage}
-
-{personName}:";
+        Şimdi bu son mesaja '{personName}' olarak cevap ver:
+        Ben: {userMessage}";
 
         // Gemini API'si için JSON payload hazırla
         var payload = new
         {
             contents = new[]
             {
-                new
+            new
+            {
+                role = "user",
+                parts = new[]
                 {
-                    role = "user",
-                    parts = new[]
-                    {
-                        new { text = prompt }
-                    }
+                    new { text = prompt }
                 }
+            }
+        },
+            generationConfig = new
+            {
+                temperature = 0.9,           // Daha yaratıcı cevaplar için biraz yükseltildi
+                topK = 40,                  // Daha doğal dil için
+                topP = 0.95,                // Daha insansı yanıtlar için
+                maxOutputTokens = 150,      // Kısa cevaplar için sınırlama
+                stopSequences = new[] { "Ben:", "Yapay", "AI:", "Asistan" }  // Bu kelimelerle bitirmeyi durdur
             }
         };
 
@@ -203,7 +175,6 @@ Ben: {userMessage}
             HttpMethod.Post,
             $"{_url}?key={_apiKey}" // API key burada query string içinde
         );
-
         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         // İstek gönder ve kontrol et
@@ -215,7 +186,39 @@ Ben: {userMessage}
             throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
         }
 
-        dynamic result = JsonConvert.DeserializeObject(responseContent);
-        return result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+        dynamic? result = JsonConvert.DeserializeObject(responseContent);
+        string aiResponse = result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+
+        // Cevabı temizle ve düzenle
+        return CleanResponse(aiResponse, personName);
+    }
+
+    // Cevabı temizleme fonksiyonu
+    private string CleanResponse(string response, string personName)
+    {
+        // Fazladan açıklamaları ve etiketleri temizle
+        response = Regex.Replace(response, $@"^({personName}:|{personName}\s*:)", "", RegexOptions.IgnoreCase);
+        response = Regex.Replace(response, @"^[""'\s]+", ""); // Baştaki gereksiz karakterleri temizle
+    
+    // Yapay zeka açıklamalarını temizle
+        response = Regex.Replace(response, @"(yapay zeka olarak|ai olarak|bir asistan olarak|bir yapay zeka asistanı olarak).*", "", RegexOptions.IgnoreCase);
+
+        // "Ben bir yapay zeka değilim" gibi ifadeleri temizle
+        response = Regex.Replace(response, @"(ben bir (yapay zeka|ai|asistan|bot) değilim).*", "", RegexOptions.IgnoreCase);
+
+        // Birden fazla boşlukları tek boşluğa çevir
+        response = Regex.Replace(response, @"\s+", " ").Trim();
+
+        // Çok uzun cevapları kısalt (WhatsApp'ta tipik bir yanıt genellikle kısadır)
+        if (response.Length > 300)
+        {
+            var sentences = Regex.Split(response, @"(?<=[.!?])\s+");
+            if (sentences.Length > 3)
+            {
+                response = string.Join(" ", sentences.Take(3));
+            }
+        }
+
+        return response.Trim();
     }
 }
