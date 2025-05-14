@@ -248,14 +248,6 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* keyframes fadeIn {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(10px);
-        } */
-
         to {
             opacity: 1;
             transform: translateY(0);
@@ -387,19 +379,6 @@
             .typing-dot:nth-child(3) {
                 animation-delay: 0.4s;
             }
-/* 
-        keyframes typingAnimation {
-            0%, 100%
-
-        {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-5px);
-        }
-
-        } */
 
         .setup-container,
         .chat-container {
@@ -430,19 +409,6 @@
             animation: spin 1s linear infinite;
         }
 
-        /* keyframes spin {
-            0%
-
-        {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-
-        } */
-
         .conversation-preview {
             background-color: #f8f9fa;
             border-radius: 10px;
@@ -460,6 +426,33 @@
             padding-top: 0.375rem;
             padding-bottom: 0.375rem;
         }
+
+        .chat-continue-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #9c27b0; /* Mor renk - normal gönder butonundan farklı */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .chat-continue-btn:hover {
+                background-color: #7b1fa2;
+                transform: scale(1.1) rotate(45deg);
+            }
+
+            .chat-continue-btn i {
+                transition: all 0.5s ease;
+            }
+
+            .chat-continue-btn.loading i {
+                animation: spin 1s linear infinite;
+            }
     </style>
 </head>
 <body>
@@ -611,8 +604,11 @@
                     <!-- Chat Footer -->
                     <div class="chat-footer">
                         <input type="text" id="messageInput" class="chat-input" placeholder="Mesajınızı yazın..." />
-                        <button id="sendMessageBtn" class="chat-send-btn">
+                        <button id="sendMessageBtn" class="chat-send-btn me-2">
                             <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <button id="autoContinueBtn" class="chat-continue-btn" title="Konuşmayı otomatik devam ettir">
+                            <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -653,7 +649,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5>WhatsApp Sohbet Analizi</h5>
-                    <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
+                    <p>WhatsApp sohbetlerinizi analiz eden, kişiselleştirilmiş yanıtlar sunan ve yapay sohbet deneyimi yaratan, Google Gemini AI destekli akıllı uygulama.</p>
                 </div>
                 <div class="col-md-3">
                     <h5>GitHub</h5>
@@ -692,7 +688,7 @@
             </div>
             <hr class="mt-4">
             <div class="text-center">
-                <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
+                <p class="mb-0">&copy; 2025 Mine. Tüm hakları saklıdır.</p>
             </div>
         </div>
     </footer>
@@ -792,6 +788,18 @@
                 alert('Lütfen bir konuşma metni girin veya bir dosya yükleyin.');
                 return;
             }
+
+        const activeConversation = conversationData || conversationText.value || rawFileData;
+
+        // Konuşmadaki kişileri tespit et
+        const detectedPeople = detectPeopleInConversation(activeConversation);
+
+        // Seçilen kişinin konuşmada var olup olmadığını kontrol et
+        if (!detectedPeople.some(person => person.toLowerCase() === chatName.toLowerCase())) {
+            alert(`"${chatName}" adlı kişi konuşma içerisinde bulunamadı.`);
+            return;
+        }
+
 
             // If conversation data is not set yet, set it from input
             if (!conversationData) {
@@ -1045,6 +1053,112 @@
                 conversationData = rawFileData;
             } else {
                 originalConversation.innerHTML = '<p class="text-danger">Konuşma metni yok!</p>';
+            }
+        }
+    </script>
+
+    <script>
+        // Kişileri tespit eden fonksiyon
+        function detectPeopleInConversation(conversation) {
+            if (!conversation) return [];
+
+            // WhatsApp formatında kişi adı tespiti
+            // Örnek format: "12.05.2025 15:30 - Ahmet: Merhaba"
+            const personRegex = /\d{1,2}\.\d{1,2}\.\d{4}\s+\d{1,2}:\d{1,2}\s+-\s+["']?(.*?)["']?:/g;
+
+            const people = new Set();
+            let match;
+
+            while ((match = personRegex.exec(conversation)) !== null) {
+                if (match[1] && match[1].trim()) {
+                    people.add(match[1].trim());
+                }
+            }
+
+            return Array.from(people);
+        }
+        // DOM Elements - Mevcut elementlere ek olarak
+        const autoContinueBtn = document.getElementById('autoContinueBtn');
+
+        // Konuşmayı otomatik devam ettirme butonuna event listener ekle
+        if (autoContinueBtn) {
+            autoContinueBtn.addEventListener('click', continueChatAutomatically);
+        }
+
+        // Konuşmayı otomatik devam ettirme fonksiyonu
+        async function continueChatAutomatically() {
+            // Eğer zaten istek gönderilmişse veya AI yazıyorsa işlemi durdur
+            if (isAiTyping) {
+                return;
+            }
+
+            // Butonun durumunu değiştir
+            autoContinueBtn.classList.add('loading');
+            autoContinueBtn.disabled = true;
+
+            // Yükleniyor animasyonu göster
+            showTypingIndicator();
+
+            // AI yazıyor bayrağını ayarla
+            isAiTyping = true;
+
+            try {
+                // İstek yükü oluştur
+                const payload = {
+                    conversation: conversationData,
+                    personName: selectedPerson || personName.value,
+                    chatHistory: chatHistory
+                };
+
+                // Devam isteğini gönder
+                const response = await fetch('/api/ChatAnalysis/ContinueConversation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Konuşma devam ettirilemedi.');
+                }
+
+                const data = await response.json();
+
+                // Yazıyor animasyonunu kaldır
+                hideTypingIndicator();
+
+                // Doğal bir gecikme efekti için kısa bekleme
+                setTimeout(() => {
+                    // AI mesajını sohbete ekle
+                    addAiMessage(data.response);
+
+                    // Sohbet geçmişine ekle
+                    chatHistory.push({ role: 'assistant', message: data.response });
+
+                    // AI yazıyor bayrağını sıfırla
+                    isAiTyping = false;
+
+                    // Butonun durumunu normale çevir
+                    autoContinueBtn.classList.remove('loading');
+                    autoContinueBtn.disabled = false;
+                }, 800);
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                // Yazıyor göstergesini kaldır
+                hideTypingIndicator();
+
+                // Hata mesajını sohbette göster
+                addErrorMessage('Konuşma devam ettirilemedi: ' + error.message);
+
+                // AI yazıyor bayrağını sıfırla
+                isAiTyping = false;
+
+                // Butonun durumunu normale çevir
+                autoContinueBtn.classList.remove('loading');
+                autoContinueBtn.disabled = false;
             }
         }
     </script>

@@ -58,6 +58,53 @@ public class ChatAnalysisController : ControllerBase
             return StatusCode(500, new { error = $"Bir hata oluştu: {ex.Message}" });
         }
     }
+
+    // Controllers/ChatAnalysisController.cs - mevcut dosyaya eklenecek metot
+
+    [HttpPost("ContinueConversation")]
+    public async Task<IActionResult> ContinueConversation([FromBody] ChatContinuationRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(request.PersonName) || string.IsNullOrWhiteSpace(request.Conversation))
+            {
+                return BadRequest(new { error = "Kişi adı ve konuşma metni gereklidir." });
+            }
+
+            // Sohbet geçmişini ve konuşma metnini kullanarak yapay cevap üret
+            string chatHistoryText = "";
+            if (request.ChatHistory != null && request.ChatHistory.Count > 0)
+            {
+                chatHistoryText = "Mevcut sohbet:\n";
+                foreach (var message in request.ChatHistory)
+                {
+                    chatHistoryText += $"{(message.Role == "user" ? "Ben" : request.PersonName)}: {message.Message}\n";
+                }
+            }
+
+            // Otomatik devam ettirme metodu çağrısı
+            string response = await _geminiClient.GenerateContinuationAsync(
+                request.Conversation,
+                request.PersonName,
+                chatHistoryText
+            );
+
+            return Ok(new { response = response });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = $"Bir hata oluştu: {ex.Message}" });
+        }
+    }
+
+}
+
+// Konuşma devam ettirme isteği için model sınıfı
+public class ChatContinuationRequest
+{
+    public required string Conversation { get; set; }
+    public string? PersonName { get; set; }
+    public List<ChatMessage>? ChatHistory { get; set; }
 }
 
 public class ChatRequest

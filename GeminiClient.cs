@@ -193,6 +193,85 @@ public class GeminiClient
         return CleanResponse(aiResponse, personName);
     }
 
+    public async Task<string> GenerateContinuationAsync(string conversation, string personName, string chatHistory = "")
+    {
+        // Konuşmayı devam ettirme için özel prompt
+        string prompt = $@"Bu bir WhatsApp sohbet simülasyonudur. '{personName}' adlı kişinin yerine geçeceksin. 
+
+AŞAĞIDAKİ TALİMATLAR ÇOK ÖNEMLİDİR, TAM OLARAK UYGULANMALIDIR:
+1. Asla açıklama yapmayacaksın ve asla bir yapay zeka olduğunu belirtmeyeceksin
+2. Sadece '{personName}' olarak yanıt vereceksin
+3. Bu özel bir istek: Sohbeti kendi başına devam ettirmelisin
+4. ÖNCEDEN CEVAPLANAN SORULARI TEKRAR SORMA! Örneğin eğer 'Naber' sorulmuş ve cevap verilmişse, aynı soruyu tekrar sorma
+5. Her zaman sohbetin mevcut bağlamını dikkate al. Son mesajlara doğrudan cevap verme, bunun yerine sohbeti ilerlet
+6. Şunları yapabilirsin: 
+   - Önceki konulara dair detaylar sor
+   - Yeni ama ilgili bir konuya geç
+   - Karşı tarafın anlattığı bir konuya dair kendi deneyimini paylaş
+   - Sohbette bahsedilen bir aktivite, yer veya kişi hakkında yeni bir şey sor
+7. '{personName}'in tarzını tam olarak taklit et: emojileri, kısaltmaları, yazım hatalarını, noktalama işaretlerini ve hitap şeklini aynen kullan
+8. Yanıtın gerçekçi bir WhatsApp sohbeti gibi kısa ve doğal olmalı (genellikle 1-3 cümle)
+
+İşte '{personName}'in yer aldığı WhatsApp konuşması:
+{conversation}
+
+İşte şu anki sohbet geçmişimiz:
+{chatHistory}
+
+ÖNEMLİ: Yukarıdaki sohbet geçmişini dikkatlice incele. Daha önce sorulmuş ve cevaplanmış sorular varsa, aynı konuları tekrarlama. Bunun yerine sohbeti ilerlet, yeni konular aç veya mevcut konuyu derinleştir. Gerçek bir kişi gibi doğal bir şekilde sohbeti devam ettir.
+
+Şimdi sohbeti '{personName}' olarak kendi başına devam ettir. Gerçekçi olsun, diyaloğu genişlet:";
+
+        // Gemini API'si için JSON payload hazırla
+        var payload = new
+        {
+            contents = new[]
+            {
+            new
+            {
+                role = "user",
+                parts = new[]
+                {
+                    new { text = prompt }
+                }
+            }
+        },
+            generationConfig = new
+            {
+                temperature = 0.92,         // Daha yaratıcı cevaplar için biraz yükseltildi
+                topK = 45,                  // Daha geniş kelime seçimi
+                topP = 0.97,                // Daha çeşitli yanıtlar için
+                maxOutputTokens = 200,      // Daha uzun cevaplar için artırıldı
+                stopSequences = new[] { "Ben:", "Yapay", "AI:", "Asistan" }  // Bu kelimelerle bitirmeyi durdur
+            }
+        };
+
+        // JSON'a çevir
+        var json = JsonConvert.SerializeObject(payload);
+
+        // İstek hazırla
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{_url}?key={_apiKey}" // API key burada query string içinde
+        );
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // İstek gönder ve kontrol et
+        var response = await _httpClient.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Gemini API HATASI ({(int)response.StatusCode}): {responseContent}");
+        }
+
+        dynamic? result = JsonConvert.DeserializeObject(responseContent);
+        string aiResponse = result?.candidates?[0]?.content?.parts?[0]?.text ?? "Yanıt alınamadı.";
+
+        // Cevabı temizle ve düzenle
+        return CleanResponse(aiResponse, personName);
+    }
+
     // Cevabı temizleme fonksiyonu
     private string CleanResponse(string response, string personName)
     {
