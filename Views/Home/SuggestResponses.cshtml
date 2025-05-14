@@ -396,22 +396,41 @@
                     <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
                 </div>
                 <div class="col-md-3">
-                    <h5>Hızlı Linkler</h5>
+                    <h5>GitHub</h5>
                     <ul class="list-unstyled">
-                        <li><a href="@Url.Action("Analyze")" class="text-white">Konuşma Analizi</a></li>
-                        <li><a href="@Url.Action("SuggestResponses")" class="text-white">Cevap Önerileri</a></li>
-                        <li><a href="@Url.Action("Help")" class="text-white">Yardım</a></li>
+                        <li>
+                            <i class="fab fa-github me-2"></i>
+                            <a href="https://github.com/gurkankaraman" target="_blank" class="text-white text-decoration-none">
+                                Gürkan Karaman
+                            </a>
+                        </li>
+                        <li>
+                            <i class="fab fa-github me-2"></i>
+                            <a href="https://github.com/BaturhanCagatay" target="_blank" class="text-white text-decoration-none">
+                                Baturhan Çağatay
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-3">
                     <h5>İletişim</h5>
                     <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i> info@whatsappanaliz.com</li>
-                        <li><i class="fas fa-phone me-2"></i> +90 212 123 4567</li>
+                        <li>
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:gurkankaraman2002@gmail.com" class="text-white text-decoration-none">
+                                gurkankaraman2002@gmail.com
+                            </a>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:baturhancagatay@gmail.com" class="text-white text-decoration-none">
+                                baturhancagatay@gmail.com
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <hr class="mt-3">
+            <hr class="mt-4">
             <div class="text-center">
                 <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
             </div>
@@ -462,55 +481,71 @@
             });
         }
 
-        // Style responses with icons
         document.addEventListener('DOMContentLoaded', function() {
             const formattedResponses = document.querySelectorAll('.formatted-response');
             if (formattedResponses.length > 0) {
-                formattedResponses.forEach((response, index) => {
-                    let content = response.innerHTML;
 
-                    // Add different styling based on the type of response
-                    if (content.includes('Samimi') || content.includes('Arkadaşça')) {
+                // Başlığı ayarla
+                if (formattedResponses.length >= 1) {
+                    const firstResponse = formattedResponses[0];
+                    const headingContent = firstResponse.innerHTML;
+                    firstResponse.style.borderLeft = '3px solid #673ab7';
+                    firstResponse.innerHTML = '<h5 class="mb-3"><i class="fas fa-info-circle me-2 text-purple"></i> <strong>Açıklama:</strong></h5>' +
+                                              '<div class="description-content">' + headingContent + '</div>';
+                }
+
+                for (let index = 1; index < formattedResponses.length; index++) {
+                    const response = formattedResponses[index];
+                    const originalContent = response.innerHTML;
+                    let styledContent = originalContent;
+
+                    // Stil belirleme
+                    if (originalContent.includes('Samimi') || originalContent.includes('Arkadaşça')) {
                         response.style.borderLeft = '3px solid #ff9800';
-                        content = '<i class="fas fa-smile me-2 text-warning"></i> <strong>Samimi Cevap:</strong><br>' + content;
-                    } else if (content.includes('Resmi') || content.includes('Profesyonel')) {
+                        styledContent = '<i class="fas fa-smile me-2 text-warning"></i> <strong>Samimi Cevap:</strong><br>' + originalContent;
+                    } else if (originalContent.includes('Resmi') || originalContent.includes('Profesyonel')) {
                         response.style.borderLeft = '3px solid #2196f3';
-                        content = '<i class="fas fa-briefcase me-2 text-primary"></i> <strong>Resmi Cevap:</strong><br>' + content;
-                    } else if (content.includes('Mizahi') || content.includes('Esprili')) {
+                        styledContent = '<i class="fas fa-briefcase me-2 text-primary"></i> <strong>Resmi Cevap:</strong><br>' + originalContent;
+                    } else if (originalContent.includes('Mizahi') || originalContent.includes('Esprili')) {
                         response.style.borderLeft = '3px solid #e91e63';
-                        content = '<i class="fas fa-laugh me-2 text-danger"></i> <strong>Esprili Cevap:</strong><br>' + content;
-                    } else if (content.includes('Kısa') || content.includes('Öz')) {
+                        styledContent = '<i class="fas fa-laugh me-2 text-danger"></i> <strong>Esprili Cevap:</strong><br>' + originalContent;
+                    } else if (originalContent.includes('Kısa') || originalContent.includes('Öz')) {
                         response.style.borderLeft = '3px solid #4caf50';
-                        content = '<i class="fas fa-check-circle me-2 text-success"></i> <strong>Kısa ve Öz Cevap:</strong><br>' + content;
+                        styledContent = '<i class="fas fa-check-circle me-2 text-success"></i> <strong>Kısa ve Öz Cevap:</strong><br>' + originalContent;
                     } else {
-                        content = '<i class="fas fa-comment me-2 text-secondary"></i> <strong>Cevap Önerisi ' + (index + 1) + ':</strong><br>' + content;
+                        styledContent = '<i class="fas fa-comment me-2 text-secondary"></i> <strong>Cevap Önerisi ' + index + ':</strong><br>' + originalContent;
                     }
 
-                    // Add copy button
+                    // Yeni içerik olarak ata
+                    response.innerHTML = styledContent;
+
+                    // Kopyalama butonunu oluştur
                     const copyBtn = document.createElement('button');
                     copyBtn.className = 'btn btn-sm btn-outline-secondary mt-2';
                     copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i> Kopyala';
-                    copyBtn.onclick = function() {
-                        // Extract text without HTML tags
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = content;
-                        const textToCopy = tempDiv.textContent || tempDiv.innerText;
 
-                        // Copy to clipboard
+                    // Olay bağla
+                    copyBtn.addEventListener('click', function () {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = originalContent.match(/"(.*?)"/);
+                        const textToCopy = tempDiv.textContent || tempDiv.innerText;
                         navigator.clipboard.writeText(textToCopy).then(() => {
-                            this.innerHTML = '<i class="fas fa-check me-1"></i> Kopyalandı';
+                            copyBtn.innerHTML = '<i class="fas fa-check me-1"></i> Kopyalandı';
                             setTimeout(() => {
-                                this.innerHTML = '<i class="fas fa-copy me-1"></i> Kopyala';
+                                copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i> Kopyala';
                             }, 2000);
                         });
+                    });
 
-                        return false;
-                    };
-
-                    response.innerHTML = content + '<div class="text-end">' + copyBtn.outerHTML + '</div>';
-                });
+                    // Butonu DOM'a **appendChild** ile Ekle!
+                    const btnContainer = document.createElement('div');
+                    btnContainer.className = 'text-end mt-2';
+                    btnContainer.appendChild(copyBtn);
+                    response.appendChild(btnContainer);
+                }
             }
         });
+
     </script>
 
 </body>

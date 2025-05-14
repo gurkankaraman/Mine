@@ -454,6 +454,12 @@
             line-height: 1.6;
             border: 1px solid #e9ecef;
         }
+
+        #personName {
+            height: calc(2.375rem + 2px); /* Bootstrap 5 select input yüksekliği */
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+        }
     </style>
 </head>
 <body>
@@ -650,23 +656,41 @@
                     <p>Google Gemini AI teknolojisiyle desteklenen WhatsApp konuşma analiz uygulaması.</p>
                 </div>
                 <div class="col-md-3">
-                    <h5>Hızlı Linkler</h5>
+                    <h5>GitHub</h5>
                     <ul class="list-unstyled">
-                        <li><a href="@Url.Action("Analyze")" class="text-white">Konuşma Analizi</a></li>
-                        <li><a href="@Url.Action("SuggestResponses")" class="text-white">Cevap Önerileri</a></li>
-                        <li><a href="@Url.Action("ArtificialChat")" class="text-white">Yapay Sohbet</a></li>
-                        <li><a href="@Url.Action("Help")" class="text-white">Yardım</a></li>
+                        <li>
+                            <i class="fab fa-github me-2"></i>
+                            <a href="https://github.com/gurkankaraman" target="_blank" class="text-white text-decoration-none">
+                                Gürkan Karaman
+                            </a>
+                        </li>
+                        <li>
+                            <i class="fab fa-github me-2"></i>
+                            <a href="https://github.com/BaturhanCagatay" target="_blank" class="text-white text-decoration-none">
+                                Baturhan Çağatay
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-3">
                     <h5>İletişim</h5>
                     <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i> info@whatsappanaliz.com</li>
-                        <li><i class="fas fa-phone me-2"></i> +90 212 123 4567</li>
+                        <li>
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:gurkankaraman2002@gmail.com" class="text-white text-decoration-none">
+                                gurkankaraman2002@gmail.com
+                            </a>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:baturhancagatay@gmail.com" class="text-white text-decoration-none">
+                                baturhancagatay@gmail.com
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <hr class="mt-3">
+            <hr class="mt-4">
             <div class="text-center">
                 <p class="mb-0">&copy; 2025 WhatsApp Sohbet Analizi. Tüm hakları saklıdır.</p>
             </div>
@@ -779,7 +803,7 @@
 
             // Update chat interface with person name
             chatPersonName.textContent = chatName;
-            welcomeSender.textContent = chatName;
+            welcomeSender.textContent = 'Bilgilendirme';
 
             // Set avatar with person's initial
             personAvatar.textContent = chatName.charAt(0).toUpperCase();
@@ -794,9 +818,6 @@
 
                 // Focus on message input
                 messageInput.focus();
-
-                // Add welcome message from selected person
-                addAiMessage(`Merhaba! Ben ${chatName}. Nasıl yardımcı olabilirim?`);
             }, 2000);
         });
 
